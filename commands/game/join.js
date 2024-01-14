@@ -5,11 +5,11 @@ module.exports = {
   async execute(interaction) {
     const nickname = interaction.member.nickname;
     const name = interaction.user.username;
-    const response = global.engine.gameJoin({
+    const { content: response, error } = global.engine.gameJoin({
       guildId: interaction.guildId,
       playerId: interaction.user.id,
       name: nickname || name,
     });
-    await interaction.reply({ content: response, ephemeral: false });
+    await interaction.reply({ content: response, ephemeral: error });
   },
 };

@@ -1,5 +1,5 @@
 const Game = require("./Game");
-const { GAME_STATUS } = require("./CONST");
+const { GAME_STATUS, ACTIONS, PLAYER_STATUS } = require("./CONST");
 
 class Engine {
   constructor() {
@@ -10,14 +10,39 @@ class Engine {
   }
 
   gameCreate(guildId) {
+    if (this.games[guildId]) {
+      this.games[guildId].gameEnd();
+    }
     this.games[guildId] = new Game(guildId);
-    return "game created";
+    return {
+      error: false,
+      content: "game created",
+    };
   }
 
   gameStart(guildId) {
-    if (!this.games[guildId]) return "game not found, create one first";
+    if (!this.games[guildId])
+      return {
+        content: "game not found, create one first",
+        error: true,
+      };
+    if (this.games[guildId].gameStatus !== GAME_STATUS.CREATED) {
+      return {
+        error: true,
+        content: `game not start-able, ${this.games[guildId].gameStatus}`,
+      };
+    }
+    if (Object.keys(this.games[guildId].players).length < 2) {
+      return {
+        error: true,
+        content: `game not start-able, not enough players`,
+      };
+    }
     this.games[guildId].gameStart();
-    return "game started";
+    return {
+      content: "game started",
+      error: false,
+    };
   }
 
   gameEnd(guildId) {
@@ -28,21 +53,34 @@ class Engine {
   }
 
   gameJoin({ guildId, playerId, name }) {
-    if (!this.games[guildId]) return "game not found";
-    if (!this.games[guildId].gameStatus === "STARTED")
-      return "game in progress";
-    if (!this.games[guildId].gameStatus === "ENDED") return "game over";
+    if (!this.games[guildId])
+      return {
+        error: true,
+        content: "game not found",
+      };
+    if (this.games[guildId].gameStatus !== GAME_STATUS.CREATED) {
+      return {
+        error: true,
+        content: `game not joinable, ${this.games[guildId].gameStatus}`,
+      };
+    }
     this.games[guildId].gameJoin({ playerId, name });
-    return `game joined, ${
-      Object.keys(this.games[guildId].players).length
-    } players`;
+    return {
+      error: false,
+      content: `game joined, ${
+        Object.keys(this.games[guildId].players).length
+      } players`,
+    };
   }
 
   gameStatus(guildId) {
     if (!this.games[guildId]) return "game not found";
+    if (this.games[guildId].status === "ENDED") {
+      return `GAME OVER\n${this.games[guildId]} wins!`;
+    }
     const playersString = Object.values(this.games[guildId].players).reduce(
       (acc, player) => {
-        return `${acc}\n${player.name}`;
+        return `${acc}\n${player.name}: ${player.status}, hp ${player.hp},  stamina: ${player.stamina}`;
       },
       ""
     );
@@ -56,6 +94,12 @@ class Engine {
       return {
         content: "game not found",
         error: true,
+      };
+    }
+    if (this.games[guildId].status === GAME_STATUS.ENDED) {
+      return {
+        content: `GAME OVER\n${this.games[guildId]} wins!`,
+        error: false,
       };
     }
     if (this.games[guildId].gameStatus !== GAME_STATUS.STARTED) {
@@ -82,6 +126,19 @@ class Engine {
         error: true,
       };
     }
+    if (this.games[guildId].players[playerId].status !== PLAYER_STATUS.ACTIVE) {
+      return {
+        content: `player inactive, ${this.games[guildId].players[playerId].status}`,
+        error: true,
+      };
+    }
+    if (this.games[guildId].players[playerId].stamina <= 0) {
+      return {
+        content: `out of stamina, ${this.games[guildId].players[playerId].stamina}`,
+        error: true,
+      };
+    }
+    this.games[guildId].players[playerId].stamina -= ACTIONS[actionId].cost;
     const actionResponse = this.games[guildId][actionId]({
       playerId,
       targetId,

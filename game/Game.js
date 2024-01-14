@@ -1,9 +1,15 @@
 const Player = require("./Player");
-const { GAME_STATUS, GAME_TIC, POLL_TIC } = require("./CONST");
+const {
+  GAME_STATUS,
+  GAME_TIC,
+  POLL_TIC,
+  MAX_STAMINA,
+  PLAYER_STATUS,
+} = require("./CONST");
 
 class Game {
   constructor(guildId) {
-    console.log("GAME", guildId);
+    console.log("NEW GAME", guildId);
 
     this.guildId = guildId;
 
@@ -14,14 +20,19 @@ class Game {
     this.pollInterval = null;
 
     this.gameStatus = GAME_STATUS.CREATED;
+    this.winner = null;
   }
 
-  gameStep() {
-    console.log("game step");
-  }
+  gameStep() {}
 
   pollStep() {
-    console.log("poll step");
+    Object.values(this.players).forEach((player) => {
+      if (player.stamina < MAX_STAMINA) {
+        player.stamina += 1;
+      }
+    });
+
+    this.checkGameOver();
   }
 
   setIntervals() {
@@ -39,10 +50,12 @@ class Game {
   }
 
   gameStart() {
+    this.setIntervals();
     this.gameStatus = GAME_STATUS.STARTED;
   }
 
   gameEnd() {
+    this.clearIntervals();
     this.gameStatus = GAME_STATUS.ENDED;
   }
 
@@ -50,8 +63,40 @@ class Game {
     this.players[playerId] = new Player({ playerId, name });
   }
 
+  checkGameOver() {
+    let activePlayers = 0;
+    let activePlayer = "no one";
+
+    Object.values(this.players).forEach((player) => {
+      if (player.status === PLAYER_STATUS.ACTIVE) {
+        activePlayers += 1;
+        activePlayer = player.name;
+      }
+    });
+
+    if (activePlayers <= 1) {
+      this.winner = activePlayer;
+      this.gameStatus = GAME_STATUS.ENDED;
+      return `\nGAME OVER: ${this.winner} wins!`;
+    }
+    return "";
+  }
+
+  damagePlayer({ targetId, damage }) {
+    this.players[targetId].hp -= damage;
+    const damageString = `\n${this.players[targetId].name} took ${damage} damage`;
+    if (this.players[targetId].hp <= 0) {
+      this.players[targetId].status = PLAYER_STATUS.DISABLED;
+      return `${damageString}\n${this.players[targetId].name} was disabled!`;
+    }
+    return damageString;
+  }
+
   punch({ playerId, targetId }) {
-    return `player ${playerId} punched ${targetId}`;
+    this.players[targetId].hp -= 1;
+    const damageResponse = this.damagePlayer({ targetId, damage: 2 });
+    const gameOverResponse = this.checkGameOver();
+    return `${this.players[playerId].name} punched ${this.players[targetId].name}${damageResponse}${gameOverResponse}`;
   }
 }
 

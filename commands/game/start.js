@@ -5,7 +5,9 @@ module.exports = {
     .setName("start")
     .setDescription("starts game"),
   async execute(interaction) {
-    const response = global.engine.gameStart(interaction.guildId);
-    await interaction.reply({ content: response, ephemeral: false });
+    const { content: response, error } = global.engine.gameStart(
+      interaction.guildId
+    );
+    await interaction.reply({ content: response, ephemeral: error });
   },
 };
