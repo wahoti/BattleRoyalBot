@@ -1,64 +1,44 @@
-const Player = require("./Player");
-
-const GAME_TIC = "1000";
-const POLL_TIC = "1000";
-
-const GAME_STATUS = {
-  CREATED: "CREATED",
-  STARTED: "STARTED",
-  ENDED: "ENDED",
-};
+const Game = require("./Game");
 
 class Engine {
   constructor() {
     console.log("ENGINE");
 
-    this.players = {};
-    this.agents = {};
-
-    this.gameInterval = null;
-    this.pollInterval = null;
-
-    this.gameStatus = GAME_STATUS.CREATED;
+    // 1 game per server
+    this.games = {};
   }
 
-  addPlayer(playerId) {
-    this.players[playerId] = new Player(playerId);
-  }
-  gameStep() {
-    console.log("game step");
+  gameCreate(guildId) {
+    this.games[guildId] = new Game(guildId);
+    return "game created";
   }
 
-  pollStep() {
-    console.log("poll step");
+  gameStart(guildId) {
+    if (!this.games[guildId]) return "game not found, create one first";
+    this.games[guildId].gameStart();
+    return "game started";
   }
 
-  setIntervals() {
-    this.pollInterval = setInterval(() => {
-      this.pollStep();
-    }, POLL_TIC);
-    this.gameInterval = setInterval(() => {
-      this.gameStep();
-    }, GAME_TIC);
+  gameEnd(guildId) {
+    if (!this.games[guildId]) return "game not found";
+    this.games[guildId] = undefined;
+    return "game ended";
   }
 
-  clearIntervals() {
-    clearInterval(this.pollInterval);
-    clearInterval(this.gameInterval);
+  gameJoin(guildId, playerId) {
+    if (!this.games[guildId]) return "game not found";
+    if (!this.games[guildId].gameStatus === "STARTED")
+      return "game in progress";
+    if (!this.games[guildId].gameStatus === "ENDED") return "game over";
+    this.games[guildId].gameJoin(playerId);
+    return `game joined, ${
+      Object.keys(this.games[guildId].players).length
+    } players`;
   }
 
-  startGame() {
-    console.log("start game");
-    this.gameStatus = GAME_STATUS.STARTED;
-  }
-
-  endGame() {
-    console.log("end game");
-    this.gameStatus = GAME_STATUS.ENDED;
-  }
-
-  status() {
-    console.log("game status", this.gameStatus);
+  gameStatus(guildId) {
+    if (!this.games[guildId]) return "game not found";
+    return this.games[guildId].gameStatus;
   }
 }
 

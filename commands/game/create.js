@@ -2,10 +2,10 @@ const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("start")
-    .setDescription("starts game"),
+    .setName("create")
+    .setDescription("creates game"),
   async execute(interaction) {
-    const response = global.engine.gameStart(interaction.guildId);
+    const response = global.engine.gameCreate(interaction.guildId);
     await interaction.reply(response);
   },
 };
