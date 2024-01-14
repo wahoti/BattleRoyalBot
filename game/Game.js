@@ -1,13 +1,5 @@
 const Player = require("./Player");
-
-const GAME_TIC = "1000";
-const POLL_TIC = "1000";
-
-const GAME_STATUS = {
-  CREATED: "CREATED",
-  STARTED: "STARTED",
-  ENDED: "ENDED",
-};
+const { GAME_STATUS, GAME_TIC, POLL_TIC } = require("./CONST");
 
 class Game {
   constructor(guildId) {
@@ -54,8 +46,12 @@ class Game {
     this.gameStatus = GAME_STATUS.ENDED;
   }
 
-  gameJoin(playerId) {
-    this.players[playerId] = new Player(playerId);
+  gameJoin({ playerId, name }) {
+    this.players[playerId] = new Player({ playerId, name });
+  }
+
+  punch({ playerId, targetId }) {
+    return `player ${playerId} punched ${targetId}`;
   }
 }
 

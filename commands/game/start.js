@@ -6,6 +6,6 @@ module.exports = {
     .setDescription("starts game"),
   async execute(interaction) {
     const response = global.engine.gameStart(interaction.guildId);
-    await interaction.reply(response);
+    await interaction.reply({ content: response, ephemeral: false });
   },
 };

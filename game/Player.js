@@ -1,7 +1,9 @@
 class Player {
-  constructor(playerId) {
+  constructor({ playerId, name }) {
     console.log("NEW PLAYER", playerId);
     this.hp = 10;
+    this.name = name;
+    this.id = playerId;
   }
 }
 

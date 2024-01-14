@@ -2,8 +2,8 @@ const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("create")
-    .setDescription("creates game"),
+    .setName("test-game")
+    .setDescription("creates and starts a test game"),
   async execute(interaction) {
     const nickname = interaction.member.nickname;
     const name = interaction.user.username;
@@ -13,7 +13,13 @@ module.exports = {
       playerId: interaction.user.id,
       name: nickname || name,
     });
-    const response = `${response1}\n${response2}`;
-    await interaction.reply({ content: response, ephemeral: false });
+    const response3 = global.engine.gameJoin({
+      guildId: interaction.guildId,
+      playerId: "1037462730812166155",
+      name: "BattleRoyalBot",
+    });
+    const response4 = global.engine.gameStart(interaction.guildId);
+    const response = `${response1}\n${response2}\n${response3}\n${response4}`;
+    await interaction.reply({ content: response, ephemeral: true });
   },
 };
