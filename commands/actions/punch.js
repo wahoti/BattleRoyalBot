@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require("discord.js");
 
-const { PUNCH_TYPES } = require("../../game/CONST");
+const { PUNCH_TYPES, execute } = require("../../game/CONST");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -23,24 +23,5 @@ module.exports = {
         .setDescription("The player to target")
         .setRequired(true)
     ),
-  async execute(interaction) {
-    const target = interaction.options.getUser("target");
-    const position = interaction.options.getString("position");
-    const { content: response, error, followUp } = global.engine.gameAction({
-      guildId: interaction.guildId,
-      playerId: interaction.user.id,
-      targetId: target.id,
-      actionId: "punch",
-      position,
-    });
-    await interaction.reply({ content: response, ephemeral: error });
-    if (followUp) {
-      const stamina =
-        global.engine.games[interaction.guildId].players[interaction.user.id]
-          .stamina;
-      setTimeout(async () => {
-        await interaction.followUp(followUp);
-      }, Math.abs(stamina * 1000));
-    }
-  },
+  execute,
 };
