@@ -6,7 +6,11 @@ const {
   MAX_STAMINA,
   PLAYER_STATUS,
   PUNCH_TYPES,
+  KICK_TYPES,
   ACTIONS,
+  LEG_DAMAGE_THRESHOLD,
+  LEG_DAMAGE_THRESHOLD_MAX,
+  STATUS_EFFECTS,
 } = require("./CONST");
 
 class Game {
@@ -67,13 +71,18 @@ class Game {
 
   getGameStatus() {
     let response = `game status: ${this.gameStatus}\n`;
-    response += `players: ${Object.keys(this.players).length}\n`;
+    response += `players: ${Object.keys(this.players).length}`;
     const playersString = Object.values(this.players).reduce((acc, player) => {
       let statusString = `${acc}\n${player.name}: ${player.status}`;
       if (player.status !== PLAYER_STATUS.ACTIVE) return statusString;
       statusString += `\n\thp ${player.hp},  `;
       statusString += `\n\tstamina: ${player.stamina}, `;
-      statusString += `\n\tstaminaDamage: ${player.staminaDamage}\n`;
+      statusString += `\n\tstaminaDamage: ${player.staminaDamage}`;
+      Object.keys(player.statusEffects).forEach((statusEffect) => {
+        if (player.statusEffects[statusEffect]) {
+          statusString += `\n\t${statusEffect}`;
+        }
+      });
       return statusString;
     }, "");
     response += playersString;
@@ -116,13 +125,36 @@ class Game {
     return `${this.players[targetId].name} took ${damage} stamina damage`;
   }
 
+  legDamagePlayer({ targetId, damage }) {
+    this.players[targetId].legDamage += damage;
+    if (this.players[targetId].legDamage >= LEG_DAMAGE_THRESHOLD_MAX) {
+      this.players[targetId].statusEffects[
+        STATUS_EFFECTS.legSeverelyInjured
+      ] = true;
+      return `${this.players[targetId].name} legs were severely injured!`;
+    }
+    if (this.players[targetId].legDamage >= LEG_DAMAGE_THRESHOLD) {
+      this.players[targetId].statusEffects[STATUS_EFFECTS.legInjured] = true;
+      return `${this.players[targetId].name} legs were injured!`;
+    }
+    return `${this.players[targetId].name} took ${damage} leg damage`;
+  }
+
   payActionCost({ playerId, cost }) {
-    const adjustedCost = cost + this.players[playerId].staminaDamage;
+    let adjustedCost = cost + this.players[playerId].staminaDamage;
+    if (this.players[playerId].statusEffects[STATUS_EFFECTS.legInjured]) {
+      adjustedCost = adjustedCost * 2;
+    }
+    if (
+      this.players[playerId].statusEffects[STATUS_EFFECTS.legSeverelyInjured]
+    ) {
+      adjustedCost = adjustedCost * 2;
+    }
+
     this.players[playerId].stamina =
-      this.players[playerId].stamina -
-      cost -
-      this.players[playerId].staminaDamage;
+      this.players[playerId].stamina - adjustedCost;
     this.players[playerId].staminaDamage = 0;
+
     return `${this.players[playerId].name} used ${adjustedCost} stamina`;
   }
 
@@ -138,8 +170,8 @@ class Game {
   }
 
   doAction({ playerId, targetId, position, actionId }) {
-    const { cost, damage } = ACTIONS[actionId];
-    console.log("actionData", actionId, cost, damage);
+    const { cost, damage, props } = ACTIONS[actionId];
+    console.log("actionData", { actionId, cost, damage, props });
 
     const costResponse = this.payActionCost({
       playerId,
@@ -150,6 +182,7 @@ class Game {
       playerId,
       targetId,
       position,
+      props,
     });
 
     const damageResponse = damage
@@ -172,27 +205,27 @@ class Game {
     };
   }
 
-  punch({ playerId, targetId, position }) {
-    console.log("punch", position);
-
+  punch({ playerId, targetId, position, props }) {
     let specialResponse = "";
     let crit = false;
 
+    const { recovery, staminaDamage } = props;
+
     switch (position) {
       case PUNCH_TYPES.Jab:
-        this.players[playerId].stamina += 3;
-        specialResponse = "3 stamina recovered (jab)";
+        this.players[playerId].stamina += recovery;
+        specialResponse = `${recovery} stamina recovered (${position})`;
         break;
       case PUNCH_TYPES.Cross:
         if (Math.random() > 0.77) {
-          specialResponse = "critical hit! extra damage (cross)";
+          specialResponse = `critical hit! extra damage (${position})`;
           crit = true;
         }
         break;
       case PUNCH_TYPES.Body:
         specialResponse = `${this.staminaDamagePlayer({
           targetId,
-          damage: 3,
+          damage: staminaDamage,
         })} (body)`;
         break;
       default:
@@ -201,6 +234,39 @@ class Game {
     return {
       ephemeral: false,
       actionString: ` punched (${position}) `,
+      specialResponse,
+      crit,
+    };
+  }
+
+  kick({ targetId, position, props }) {
+    let specialResponse = "";
+    let crit = false;
+
+    const { legDamage, staminaDamage } = props;
+
+    switch (position) {
+      case KICK_TYPES.Head:
+        if (Math.random() > 0.77) {
+          specialResponse = `critical hit! extra damage (${position} kick)`;
+          crit = true;
+        }
+        break;
+      case KICK_TYPES.Body:
+        specialResponse = `${this.staminaDamagePlayer({
+          targetId,
+          damage: staminaDamage,
+        })} (${position} kick)`;
+        break;
+      case KICK_TYPES.Leg:
+        specialResponse = this.legDamagePlayer({ targetId, damage: legDamage });
+        break;
+      default:
+    }
+
+    return {
+      ephemeral: false,
+      actionString: ` kicked (${position}) `,
       specialResponse,
       crit,
     };

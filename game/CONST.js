@@ -14,12 +14,27 @@ const PLAYER_STATUS = {
 
 const MAX_HP = 10;
 const MAX_STAMINA = 1;
+const LEG_DAMAGE_THRESHOLD = 5;
+const LEG_DAMAGE_THRESHOLD_MAX = 10;
 
 const ACTIONS = {
   punch: {
     name: "punch",
     cost: 10,
     damage: 2,
+    props: {
+      recovery: 5,
+      staminaDamage: 4,
+    },
+  },
+  kick: {
+    name: "kick",
+    cost: 20,
+    damage: 4,
+    props: {
+      staminaDamage: 8,
+      legDamage: 4,
+    },
   },
 };
 
@@ -27,6 +42,12 @@ const PUNCH_TYPES = {
   Jab: "Jab",
   Cross: "Cross",
   Body: "Body",
+};
+
+const KICK_TYPES = {
+  Body: "Body",
+  Head: "Head",
+  Leg: "Leg",
 };
 
 const getExecute = (actionId) => async (interaction) => {
@@ -50,6 +71,11 @@ const getExecute = (actionId) => async (interaction) => {
   }
 };
 
+const STATUS_EFFECTS = {
+  legInjured: "leg injured",
+  legSeverelyInjured: "leg severely injured",
+};
+
 module.exports = {
   GAME_STATUS,
   GAME_TIC,
@@ -59,5 +85,9 @@ module.exports = {
   ACTIONS,
   PLAYER_STATUS,
   PUNCH_TYPES,
+  KICK_TYPES,
   getExecute,
+  LEG_DAMAGE_THRESHOLD,
+  LEG_DAMAGE_THRESHOLD_MAX,
+  STATUS_EFFECTS,
 };
