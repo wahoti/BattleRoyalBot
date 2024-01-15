@@ -21,3 +21,5 @@ mvp actions
 - evade
 - kick
 - guard
+
+- self host: caffeinate node index.js
