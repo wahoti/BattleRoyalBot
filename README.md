@@ -4,15 +4,20 @@ mvp actions
 
 - punch
 - kick
-- evade
-- guard
-- counter
-- grapple
+- dodge - spend a lot of stamina to dodge attacks
+- dodge chance - equal to a crit
+- attacks include a number
+- guard - spend a little stamina to reduce damage
+- counter - predict an attack for a countr hit and dodge
+- grapple - ??
 
 - hosting (DigitalOcean)
   https://devdojo.com/howtoubuntu/run-a-discordjs-bot-on-ubuntu
   https://www.npmjs.com/package/pm2
   https://pm2.keymetrics.io/docs/usage/cluster-mode/
+- pm2 start app.js
+- pm2 list
+- pm2 delete
 
 to add a new command
 

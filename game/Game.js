@@ -11,6 +11,8 @@ const {
   LEG_DAMAGE_THRESHOLD,
   LEG_DAMAGE_THRESHOLD_MAX,
   STATUS_EFFECTS,
+  DODGE_MAP,
+  POSITION_MAP,
 } = require("./CONST");
 
 class Game {
@@ -158,11 +160,8 @@ class Game {
     return `${this.players[playerId].name} used ${adjustedCost} stamina`;
   }
 
-  getActionResponse({ targetId, playerId, actionString, responses }) {
+  getActionResponse(responses) {
     let content = "";
-    content += this.players[playerId].name;
-    content += actionString;
-    content += this.players[targetId].name;
     responses.forEach((response) => {
       if (response.length) content += `\n${response}`;
     });
@@ -173,32 +172,55 @@ class Game {
     const { cost, damage, props } = ACTIONS[actionId];
     console.log("actionData", { actionId, cost, damage, props });
 
+    const followUp = { content: "stamina recovered", ephemeral: true };
+
     const costResponse = this.payActionCost({
       playerId,
       cost,
     });
 
-    const { ephemeral, actionString, specialResponse, crit } = this[actionId]({
-      playerId,
-      targetId,
-      position,
-      props,
-    });
+    let preventAction = false;
+
+    if (
+      props.dodgeable &&
+      DODGE_MAP[this.players[targetId].dodge] !== POSITION_MAP[position]
+    ) {
+      preventAction = `${this.players[targetId].name} dodged the attack (${actionId} ${position})`;
+    }
+
+    // if (props.counterable)
+
+    if (preventAction) {
+      return {
+        response: {
+          content: this.getActionResponse([costResponse, preventAction]),
+          ephemeral: false,
+        },
+        followUp,
+      };
+    }
+
+    const { ephemeral, actionResponse, specialResponse, crit } = this[actionId](
+      {
+        playerId,
+        targetId,
+        position,
+        props,
+      }
+    );
 
     const damageResponse = damage
       ? this.damagePlayer({ targetId, damage, crit })
       : "";
 
-    const followUp = { content: "stamina recovered", ephemeral: true };
-
     return {
       response: {
-        content: this.getActionResponse({
-          playerId,
-          targetId,
-          responses: [costResponse, specialResponse, damageResponse],
-          actionString,
-        }),
+        content: this.getActionResponse([
+          costResponse,
+          actionResponse,
+          specialResponse,
+          damageResponse,
+        ]),
         ephemeral,
       },
       followUp,
@@ -231,15 +253,20 @@ class Game {
       default:
     }
 
+    let actionResponse = "";
+    actionResponse += this.players[playerId].name;
+    actionResponse += ` punched (${position}) `;
+    actionResponse += this.players[targetId].name;
+
     return {
       ephemeral: false,
-      actionString: ` punched (${position}) `,
+      actionResponse,
       specialResponse,
       crit,
     };
   }
 
-  kick({ targetId, position, props }) {
+  kick({ playerId, targetId, position, props }) {
     let specialResponse = "";
     let crit = false;
 
@@ -264,11 +291,38 @@ class Game {
       default:
     }
 
+    let actionResponse = "";
+    actionResponse += this.players[playerId].name;
+    actionResponse += ` kicked (${position}) `;
+    actionResponse += this.players[targetId].name;
+
     return {
       ephemeral: false,
-      actionString: ` kicked (${position}) `,
+      actionResponse,
       specialResponse,
       crit,
+    };
+  }
+
+  dodge({ playerId, position, props }) {
+    let specialResponse = "";
+
+    const { duration } = props;
+
+    let actionResponse = "";
+    actionResponse += this.players[playerId].name;
+    actionResponse += ` is evading attacks (${duration})`;
+
+    this.players[playerId].dodge = position;
+    setTimeout(() => {
+      this.players[playerId].dodge = null;
+    }, duration * 1000);
+
+    return {
+      ephemeral: false,
+      actionResponse,
+      specialResponse,
+      crit: false,
     };
   }
 }

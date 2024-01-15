@@ -23,5 +23,5 @@ module.exports = {
         .setDescription("The player to target")
         .setRequired(true)
     ),
-  execute: getExecute("punch"),
+  execute: getExecute({ actionId: "punch", useTarget: true }),
 };

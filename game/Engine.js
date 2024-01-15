@@ -114,7 +114,7 @@ class Engine {
         },
       };
     }
-    if (!this.games[guildId].players[targetId]) {
+    if (targetId && !this.games[guildId].players[targetId]) {
       return {
         response: {
           content: "target not found",

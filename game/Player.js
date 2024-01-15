@@ -13,6 +13,8 @@ class Player {
     this.statusEffects = {
       poopoo: "doodoo",
     };
+    this.dodge = null;
+    this.counter = null;
   }
 }
 

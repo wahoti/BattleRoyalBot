@@ -25,6 +25,8 @@ const ACTIONS = {
     props: {
       recovery: 5,
       staminaDamage: 4,
+      dodgeable: true,
+      counterable: true,
     },
   },
   kick: {
@@ -34,29 +36,73 @@ const ACTIONS = {
     props: {
       staminaDamage: 8,
       legDamage: 4,
+      dodgeable: true,
+      counterable: true,
+    },
+  },
+  dodge: {
+    name: "dodge",
+    cost: 1,
+    props: {
+      duration: 30,
     },
   },
 };
 
 const PUNCH_TYPES = {
-  Jab: "Jab",
-  Cross: "Cross",
-  Body: "Body",
+  Jab: "Jab", // Mid
+  Cross: "Cross", // High
+  Body: "Body", // Low
 };
 
 const KICK_TYPES = {
-  Body: "Body",
-  Head: "Head",
-  Leg: "Leg",
+  Body: "Body", // Mid
+  Head: "Head", // High
+  Leg: "Leg", // Low
 };
 
-const getExecute = (actionId) => async (interaction) => {
-  const target = interaction.options.getUser("target");
+const GRAPPLE_TYPES = {
+  Trip: "Trip", // Low
+  Takedown: "Takedown", // Mid
+  Throw: "Throw", // High
+};
+
+const DODGE_TYPES = {
+  Low: "Low",
+  Mid: "Mid",
+  High: "High",
+};
+
+const POSITION_MAP = {
+  [GRAPPLE_TYPES.Trip]: DODGE_TYPES.Low,
+  [GRAPPLE_TYPES.Takedown]: DODGE_TYPES.Mid,
+  [GRAPPLE_TYPES.Throw]: DODGE_TYPES.High,
+
+  [KICK_TYPES.Leg]: DODGE_TYPES.Low,
+  [KICK_TYPES.Body]: DODGE_TYPES.Mid,
+  [KICK_TYPES.Head]: DODGE_TYPES.High,
+
+  [PUNCH_TYPES.Body]: DODGE_TYPES.Low,
+  [PUNCH_TYPES.Jab]: DODGE_TYPES.Mid,
+  [PUNCH_TYPES.High]: DODGE_TYPES.High,
+};
+
+// low hit by mid
+// mid hit by high
+// high hit by low
+const DODGE_MAP = {
+  [DODGE_TYPES.Low]: DODGE_TYPES.Mid,
+  [DODGE_TYPES.Mid]: DODGE_TYPES.High,
+  [DODGE_TYPES.High]: DODGE_TYPES.Low,
+};
+
+const getExecute = ({ actionId, useTarget = false }) => async (interaction) => {
+  const target = useTarget ? interaction.options.getUser("target") : "";
   const position = interaction.options.getString("position");
   const { response, followUp } = global.engine.gameAction({
     guildId: interaction.guildId,
     playerId: interaction.user.id,
-    targetId: target.id,
+    targetId: target?.id,
     actionId,
     position,
   });
@@ -90,4 +136,8 @@ module.exports = {
   LEG_DAMAGE_THRESHOLD,
   LEG_DAMAGE_THRESHOLD_MAX,
   STATUS_EFFECTS,
+  GRAPPLE_TYPES,
+  DODGE_TYPES,
+  POSITION_MAP,
+  DODGE_MAP,
 };
