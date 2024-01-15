@@ -13,13 +13,19 @@ const PLAYER_STATUS = {
 };
 
 const MAX_HP = 10;
-const MAX_STAMINA = 10;
+const MAX_STAMINA = 1;
 
 const ACTIONS = {
   punch: {
     name: "punch",
-    cost: 5,
+    cost: 10,
   },
+};
+
+const PUNCH_TYPES = {
+  Jab: "Jab",
+  Cross: "Cross",
+  Body: "Body",
 };
 
 module.exports = {
@@ -30,4 +36,5 @@ module.exports = {
   MAX_STAMINA,
   ACTIONS,
   PLAYER_STATUS,
+  PUNCH_TYPES,
 };

@@ -78,18 +78,10 @@ class Engine {
     if (this.games[guildId].status === "ENDED") {
       return `GAME OVER\n${this.games[guildId]} wins!`;
     }
-    const playersString = Object.values(this.games[guildId].players).reduce(
-      (acc, player) => {
-        return `${acc}\n${player.name}: ${player.status}, hp ${player.hp},  stamina: ${player.stamina}`;
-      },
-      ""
-    );
-    return `game status: ${this.games[guildId].gameStatus}\nplayers: ${
-      Object.keys(this.games[guildId].players).length
-    }\n${playersString}`;
+    return this.games[guildId].getGameStatus();
   }
 
-  gameAction({ guildId, playerId, targetId, actionId }) {
+  gameAction({ guildId, playerId, targetId, actionId, position }) {
     if (!this.games[guildId]) {
       return {
         content: "game not found",
@@ -138,14 +130,20 @@ class Engine {
         error: true,
       };
     }
-    this.games[guildId].players[playerId].stamina -= ACTIONS[actionId].cost;
+    const costString = this.games[guildId].payActionCost({
+      playerId,
+      cost: ACTIONS[actionId].cost,
+    });
     const actionResponse = this.games[guildId][actionId]({
       playerId,
       targetId,
+      position,
     });
+    const followUp = { content: "stamina recovered", ephemeral: true };
     return {
-      content: actionResponse,
-      error: false,
+      ...actionResponse,
+      content: `${costString}\n${actionResponse.content}`,
+      followUp,
     };
   }
 }

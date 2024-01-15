@@ -5,6 +5,7 @@ class Player {
     console.log("NEW PLAYER", playerId);
     this.hp = MAX_HP;
     this.stamina = MAX_STAMINA;
+    this.staminaDamage = 0;
     this.name = name;
     this.id = playerId;
     this.status = PLAYER_STATUS.ACTIVE;
