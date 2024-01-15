@@ -4,12 +4,10 @@ mvp actions
 
 - punch
 - kick
-- dodge - spend a lot of stamina to dodge attacks
-- dodge chance - equal to a crit
-- attacks include a number
-- guard - spend a little stamina to reduce damage
-- counter - predict an attack for a countr hit and dodge
-- grapple - ??
+- dodge: dodge all except one low mid high
+- counter: counter one low mid high (todo)
+- guard: reduce damage (todo)
+- grapple: ?? (todo)
 
 - hosting (DigitalOcean)
   https://devdojo.com/howtoubuntu/run-a-discordjs-bot-on-ubuntu
@@ -25,3 +23,7 @@ to add a new command
 - register the command in /game/CONST.js
 - add options in /game/CONST.js
 - add a handler to /game/Game.js
+
+guard thoughts
+
+grapple thoughts
