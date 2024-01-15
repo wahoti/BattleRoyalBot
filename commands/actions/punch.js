@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require("discord.js");
 
-const { PUNCH_TYPES, execute } = require("../../game/CONST");
+const { PUNCH_TYPES, getExecute } = require("../../game/CONST");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -23,5 +23,5 @@ module.exports = {
         .setDescription("The player to target")
         .setRequired(true)
     ),
-  execute,
+  execute: getExecute("punch"),
 };

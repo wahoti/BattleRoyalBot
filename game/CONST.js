@@ -19,6 +19,7 @@ const ACTIONS = {
   punch: {
     name: "punch",
     cost: 10,
+    damage: 2,
   },
 };
 
@@ -28,17 +29,17 @@ const PUNCH_TYPES = {
   Body: "Body",
 };
 
-async function execute(interaction) {
+const getExecute = (actionId) => async (interaction) => {
   const target = interaction.options.getUser("target");
   const position = interaction.options.getString("position");
-  const { content: response, error, followUp } = global.engine.gameAction({
+  const { response, followUp } = global.engine.gameAction({
     guildId: interaction.guildId,
     playerId: interaction.user.id,
     targetId: target.id,
-    actionId: "punch",
+    actionId,
     position,
   });
-  await interaction.reply({ content: response, ephemeral: error });
+  await interaction.reply(response);
   if (followUp) {
     const stamina =
       global.engine.games[interaction.guildId].players[interaction.user.id]
@@ -47,7 +48,7 @@ async function execute(interaction) {
       await interaction.followUp(followUp);
     }, Math.abs(stamina * 1000));
   }
-}
+};
 
 module.exports = {
   GAME_STATUS,
@@ -58,5 +59,5 @@ module.exports = {
   ACTIONS,
   PLAYER_STATUS,
   PUNCH_TYPES,
-  execute,
+  getExecute,
 };

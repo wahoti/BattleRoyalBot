@@ -84,67 +84,74 @@ class Engine {
   gameAction({ guildId, playerId, targetId, actionId, position }) {
     if (!this.games[guildId]) {
       return {
-        content: "game not found",
-        error: true,
+        response: {
+          content: "game not found",
+          ephemeral: true,
+        },
       };
     }
     if (this.games[guildId].status === GAME_STATUS.ENDED) {
       return {
-        content: `GAME OVER\n${this.games[guildId]} wins!`,
-        error: false,
+        response: {
+          content: `GAME OVER\n${this.games[guildId]} wins!`,
+          ephemeral: false,
+        },
       };
     }
     if (this.games[guildId].gameStatus !== GAME_STATUS.STARTED) {
       return {
-        content: `game not started, ${this.games[guildId].gameStatus}`,
-        error: true,
+        response: {
+          content: `game not started, ${this.games[guildId].gameStatus}`,
+          ephemeral: true,
+        },
       };
     }
     if (!this.games[guildId].players[playerId]) {
       return {
-        content: "player not found",
-        error: true,
+        response: {
+          content: "player not found",
+          ephemeral: true,
+        },
       };
     }
     if (!this.games[guildId].players[targetId]) {
       return {
-        content: "target not found",
-        error: true,
+        response: {
+          content: "target not found",
+          ephemeral: true,
+        },
       };
     }
     if (!this.games[guildId][actionId]) {
       return {
-        content: "action not found",
-        error: true,
+        response: {
+          content: "action not found",
+          ephemeral: true,
+        },
       };
     }
     if (this.games[guildId].players[playerId].status !== PLAYER_STATUS.ACTIVE) {
       return {
-        content: `player inactive, ${this.games[guildId].players[playerId].status}`,
-        error: true,
+        response: {
+          content: `player inactive, ${this.games[guildId].players[playerId].status}`,
+          ephemeral: true,
+        },
       };
     }
     if (this.games[guildId].players[playerId].stamina <= 0) {
       return {
-        content: `out of stamina, ${this.games[guildId].players[playerId].stamina}`,
-        error: true,
+        response: {
+          content: `out of stamina, ${this.games[guildId].players[playerId].stamina}`,
+          ephemeral: true,
+        },
       };
     }
-    const costString = this.games[guildId].payActionCost({
-      playerId,
-      cost: ACTIONS[actionId].cost,
-    });
-    const actionResponse = this.games[guildId][actionId]({
+    return this.games[guildId].doAction({
       playerId,
       targetId,
       position,
+      actionId,
     });
-    const followUp = { content: "stamina recovered", ephemeral: true };
-    return {
-      ...actionResponse,
-      content: `${costString}\n${actionResponse.content}`,
-      followUp,
-    };
   }
 }
 

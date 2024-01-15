@@ -23,3 +23,7 @@ mvp actions
 - guard
 
 - self host: caffeinate node index.js
+
+https://devdojo.com/howtoubuntu/run-a-discordjs-bot-on-ubuntu
+https://www.npmjs.com/package/pm2
+https://pm2.keymetrics.io/docs/usage/cluster-mode/

@@ -6,6 +6,7 @@ const {
   MAX_STAMINA,
   PLAYER_STATUS,
   PUNCH_TYPES,
+  ACTIONS,
 } = require("./CONST");
 
 class Game {
@@ -101,7 +102,7 @@ class Game {
   damagePlayer({ targetId, damage, crit }) {
     const _damage = crit ? damage * 2 : damage;
     this.players[targetId].hp -= _damage;
-    const damageString = `\n${this.players[targetId].name} took ${_damage} damage`;
+    const damageString = `${this.players[targetId].name} took ${_damage} damage`;
     if (this.players[targetId].hp <= 0) {
       this.players[targetId].status = PLAYER_STATUS.DISABLED;
       const gameOverResponse = this.checkGameOver();
@@ -131,9 +132,44 @@ class Game {
     content += actionString;
     content += this.players[targetId].name;
     responses.forEach((response) => {
-      content += response;
+      if (response.length) content += `\n${response}`;
     });
     return content;
+  }
+
+  doAction({ playerId, targetId, position, actionId }) {
+    const { cost, damage } = ACTIONS[actionId];
+    console.log("actionData", actionId, cost, damage);
+
+    const costResponse = this.payActionCost({
+      playerId,
+      cost,
+    });
+
+    const { ephemeral, actionString, specialResponse, crit } = this[actionId]({
+      playerId,
+      targetId,
+      position,
+    });
+
+    const damageResponse = damage
+      ? this.damagePlayer({ targetId, damage, crit })
+      : "";
+
+    const followUp = { content: "stamina recovered", ephemeral: true };
+
+    return {
+      response: {
+        content: this.getActionResponse({
+          playerId,
+          targetId,
+          responses: [costResponse, specialResponse, damageResponse],
+          actionString,
+        }),
+        ephemeral,
+      },
+      followUp,
+    };
   }
 
   punch({ playerId, targetId, position }) {
@@ -141,19 +177,20 @@ class Game {
 
     let specialResponse = "";
     let crit = false;
+
     switch (position) {
       case PUNCH_TYPES.Jab:
         this.players[playerId].stamina += 3;
-        specialResponse = "\n3 stamina recovered (jab)";
+        specialResponse = "3 stamina recovered (jab)";
         break;
       case PUNCH_TYPES.Cross:
         if (Math.random() > 0.77) {
-          specialResponse = "\ncritical hit! extra damage (cross)";
+          specialResponse = "critical hit! extra damage (cross)";
           crit = true;
         }
         break;
       case PUNCH_TYPES.Body:
-        specialResponse = `\n${this.staminaDamagePlayer({
+        specialResponse = `${this.staminaDamagePlayer({
           targetId,
           damage: 3,
         })} (body)`;
@@ -161,16 +198,11 @@ class Game {
       default:
     }
 
-    const damageResponse = this.damagePlayer({ targetId, damage: 2, crit });
-
     return {
-      content: this.getActionResponse({
-        playerId,
-        targetId,
-        responses: [specialResponse, damageResponse],
-        actionString: ` punched (${position}) `,
-      }),
-      error: false,
+      ephemeral: false,
+      actionString: ` punched (${position}) `,
+      specialResponse,
+      crit,
     };
   }
 }
