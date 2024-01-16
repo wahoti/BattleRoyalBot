@@ -2,21 +2,21 @@ GAME INFO
 
 In BattleRoyalBot players participate in a free for all combat where players take damage to their health points until there is only one player left. Players perform actions through / commands. Each action has a stamina cost. Stamina refunds at 1 point a second so you can think of stamina cost as a cooldown before your next action.
 
-/create: creates a game and auto joins it
-/join: joins a game
-/start: starts the game
-/end: ends the game
-/status: see status of current game
-/test: create and start a test game with the bot
+/game-create: creates a game and auto joins it
+/game-join: joins a game
+/game-start: starts the game
+/game-end: ends the game
+/game-status: see status of current game
+/test-game: create and start a test game with the bot
 
 Each server has 1 game going at a time. If you create a new game it will override the existing one.
 
-/punch
-/kick
-/grapple
-/dodge
-/counter
-/guard
+/attack-punch
+/attack-kick
+/attack-grapple
+/defend-dodge
+/defend-counter
+/defend-guard
 
 - punch: basic attack, 3 types
 - - body (low): stamina damage
@@ -82,3 +82,8 @@ to add a new command
 - register the command in /game/CONST.js
 - add options in /game/CONST.js
 - add a handler to /game/Game.js
+
+to clear stale commands
+
+- uncomment RESET_COMMANDS
+- run deploy_commands.js

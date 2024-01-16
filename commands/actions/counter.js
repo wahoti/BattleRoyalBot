@@ -4,8 +4,8 @@ const { DODGE_TYPES, getExecute } = require("../../game/CONST");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("counter")
-    .setDescription("counter")
+    .setName("defend-counter")
+    .setDescription("counter an attack")
     .addStringOption((option) =>
       option
         .setName("position")

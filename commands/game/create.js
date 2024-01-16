@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("create")
+    .setName("game-create")
     .setDescription("creates game"),
   async execute(interaction) {
     const nickname = interaction.member.nickname;

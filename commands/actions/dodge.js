@@ -2,14 +2,10 @@ const { SlashCommandBuilder } = require("discord.js");
 
 const { DODGE_TYPES, getExecute } = require("../../game/CONST");
 
-// low hit by mid
-// mid hit by high
-// high hit by low
-
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("dodge")
-    .setDescription("dodge")
+    .setName("defend-dodge")
+    .setDescription("dodge incoming attacks")
     .addStringOption((option) =>
       option
         .setName("position")

@@ -4,7 +4,7 @@ const { getExecute, GUARD_TYPES } = require("../../game/CONST");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("guard")
+    .setName("defend-guard")
     .setDescription("reduce incoming damage")
     .addStringOption((option) =>
       option

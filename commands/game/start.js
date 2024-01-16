@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("start")
+    .setName("game-start")
     .setDescription("starts game"),
   async execute(interaction) {
     await interaction.reply({ content: "3.. 2.. 1..", ephemeral: false });

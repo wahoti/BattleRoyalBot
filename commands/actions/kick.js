@@ -4,8 +4,8 @@ const { KICK_TYPES, getExecute } = require("../../game/CONST");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("kick")
-    .setDescription("kick for damage")
+    .setName("attack-kick")
+    .setDescription("perform a kick attack")
     .addStringOption((option) =>
       option
         .setName("position")
