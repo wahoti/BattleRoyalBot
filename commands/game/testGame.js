@@ -1,5 +1,7 @@
 const { SlashCommandBuilder } = require("discord.js");
 
+const { SPEED_TYPES } = require("../../game/CONST");
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("test-game")
@@ -7,9 +9,10 @@ module.exports = {
   async execute(interaction) {
     const nickname = interaction.member.nickname;
     const name = interaction.user.username;
-    const { content: response1, error: error1 } = global.engine.gameCreate(
-      interaction.guildId
-    );
+    const { content: response1, error: error1 } = global.engine.gameCreate({
+      guildId: interaction.guildId,
+      speed: SPEED_TYPES.Fast,
+    });
     if (error1) {
       await interaction.reply({ content: response1, ephemeral: true });
     }

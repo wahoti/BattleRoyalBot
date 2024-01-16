@@ -9,11 +9,11 @@ class Engine {
     this.games = {};
   }
 
-  gameCreate(guildId) {
+  gameCreate({ guildId, speed }) {
     if (this.games[guildId]) {
       this.games[guildId].gameEnd();
     }
-    this.games[guildId] = new Game(guildId);
+    this.games[guildId] = new Game({ guildId, speed });
     return {
       error: false,
       content: "game created",

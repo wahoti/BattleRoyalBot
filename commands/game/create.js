@@ -1,15 +1,30 @@
 const { SlashCommandBuilder } = require("discord.js");
 
+const { SPEED_TYPES } = require("../../game/CONST");
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("game-create")
-    .setDescription("creates game"),
+    .setDescription("creates game")
+    .addStringOption((option) =>
+      option
+        .setName("speed")
+        .setDescription("speed")
+        .setRequired(true)
+        .addChoices(
+          { name: SPEED_TYPES.Fast, value: SPEED_TYPES.Fast },
+          { name: SPEED_TYPES.Medium, value: SPEED_TYPES.Medium },
+          { name: SPEED_TYPES.Slow, value: SPEED_TYPES.Slow }
+        )
+    ),
   async execute(interaction) {
     const nickname = interaction.member.nickname;
     const name = interaction.user.username;
-    const { content: response1, error: error1 } = global.engine.gameCreate(
-      interaction.guildId
-    );
+    const speed = interaction.options.getString("speed");
+    const { content: response1, error: error1 } = global.engine.gameCreate({
+      guildId: interaction.guildId,
+      speed,
+    });
     if (error1) {
       await interaction.reply({ content: response1, ephemeral: true });
     }

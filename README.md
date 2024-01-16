@@ -1,69 +1,154 @@
 GAME INFO
 
-In BattleRoyalBot players participate in a free for all combat where players take damage to their health points until there is only one player left. Players perform actions through / commands. Each action has a stamina cost. Stamina refunds at 1 point a second so you can think of stamina cost as a cooldown before your next action. The bot sends you a message when your stamina recovers and you can act again.
+In BattleRoyalBot players participate in a free for all combat where players take damage to their health points until there is only one player left. Players perform actions through / commands. Each action has a stamina cost. After using an ability players will have to wait for their stamina to recharge before peforming another action. Stamina regenerates over time so you can think of stamina cost as a cooldown before your next action. The bot sends you a message when your stamina recovers and you can act again.
 
-/game-create: creates a game and auto joins it
-/game-join: joins a game
-/game-start: starts the game
-/game-end: ends the game
-/game-status: see status of current game
-/test-game: create and start a test game with the bot
+- Each server has 1 game going at a time. If you create a new game it will override the existing one.
 
-Each server has 1 game going at a time. If you create a new game it will override the existing one.
+COMMANDS
 
-/attack-punch
-/attack-kick
-/attack-grapple
-/defend-dodge
-/defend-counter
-/defend-guard
+- /game-create: creates a game and auto joins it
+- /game-join: joins a game
+- /game-start: starts the game
+- /game-end: ends the game
+- /game-status: see status of current game
+- /test-game: create and start a test game with the bot
 
-- punch: basic attack, 3 types
+- /attack-punch
+- /attack-kick
+- /attack-grapple
+- /defend-dodge
+- /defend-counter
+- /defend-guard
+
+- /attack-punch: basic attack, 3 types
 - - body (low): stamina damage
 - - jab (mid): recover stamina
 - - cross (high): critical hit chance 23% for double damage
 
-- kick: higher cost higher damage basic attack, 3 types
+- /attack-kick: higher cost higher damage basic attack, 3 types
 - - leg (low): leg damage
 - - body (mid): stamina damage
 - - high (high): critical hit chance 23% for double damage
 
-- grapple: basic attack that increments grapple status, 3 types
+- /attack-grapple: basic attack that increments grapple status, 3 types
 - - trip (low): recover stamina
 - - takedown (mid): stamina damage
 - - throw (high): health damage
 
-- dodge: pick 1 of 3 positions to dodge (low, mid, high)
+- /defend-dodge: pick 1 of 3 positions to dodge (low, mid, high)
 - - low is hit by mid
 - - mid is hit by high
 - - high is hit by low
 
-- counter: pick 1 of 3 position to counter
+- /defend-counter: pick 1 of 3 position to counter
 - - evade and retaliate against an attack of chosen position
 
-- guard: reduce incoming damage, 3 types
+- /defend-guard: reduce incoming damage, 3 types
 - - quick: recover stamina
 - - recover: recover health
 - - grapple: reduce your grapple level by one, defend against incoming grapples
 
-stamina recovers at 1 point a second
+MECHANICS
 
 stamina damage: causes extra stamina usage on the player's next action then is reset to 0.
 
-grapple status: increments from level 1 to level 3
+grapple status: grappling an opponent builds up their grapple level from 1 to 3.
 
 - level 1: -1 damage, +1 stamina fatigue
 - level 2: -2 damage, +2 stamina fatigue
 - level 3: 10 damage
 
-leg damage: builds up and causes negative effects
+leg damage: attacks with leg damage build up a meter with negative effects at certain thresholds.
 
 - 5 damage: doubled stamina cost
 - 10 damage: doubled stamina cost again
 
-critical hits are 23% for double damage
+critical hits: attacks that can crit have a 23% chance for double damage.
 
-NOTES
+- attacks that can crit:
+- - cross punch
+- - head kick
+- - counters
+
+game speed:
+
+- Fast game speed: stamina regenerates at 1 point per second
+- Medium game speed: stamina regenerates at 1 point per 2 seconds
+- Slow game speed: stamina regenerates at 1 point per 3 seconds
+
+ACTION DETAILS
+
+```
+const MAX_HP = 10;
+const MAX_STAMINA = 1;
+const LEG_DAMAGE_THRESHOLD = 5;
+const LEG_DAMAGE_THRESHOLD_MAX = 10;
+const COUNTER_DAMAGE = 5;
+const GRAPPLE_DAMAGE = 10;
+const GRAPPLE_LIMIT = 3;
+
+const ACTIONS = {
+  punch: {
+    name: "Punch",
+    cost: 10,
+    damage: 2,
+    props: {
+      staminaRecovery: 5,
+      staminaDamage: 4,
+      dodgeable: true,
+      counterable: true,
+    },
+  },
+  kick: {
+    name: "Kick",
+    cost: 20,
+    damage: 4,
+    props: {
+      staminaDamage: 8,
+      legDamage: 4,
+      dodgeable: true,
+      counterable: true,
+    },
+  },
+  grapple: {
+    name: "Grapple",
+    cost: 15,
+    damage: 0,
+    props: {
+      staminaDamage: 4,
+      staminaRecovery: 5,
+      throwDamage: 2,
+      dodgeable: true,
+      counterable: true,
+    },
+  },
+  dodge: {
+    name: "Dodge",
+    cost: 10,
+    props: {
+      duration: 15,
+    },
+  },
+  counter: {
+    name: "Counter",
+    cost: 5,
+    props: {
+      duration: 15,
+    },
+  },
+  guard: {
+    name: "Guard",
+    cost: 8,
+    props: {
+      duration: 15,
+      staminaRecovery: 4,
+      healthRecovery: 2,
+    },
+  },
+};
+```
+
+DEVELOPMENT NOTES
 
 https://discord.com/api/oauth2/authorize?client_id=1037462730812166155&permissions=2147551232&scope=bot%20applications.commands
 

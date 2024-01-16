@@ -1,6 +1,3 @@
-const GAME_TIC = "1000";
-const POLL_TIC = "1000";
-
 const GAME_STATUS = {
   CREATED: "CREATED",
   STARTED: "STARTED",
@@ -16,6 +13,9 @@ const MAX_HP = 10;
 const MAX_STAMINA = 1;
 const LEG_DAMAGE_THRESHOLD = 5;
 const LEG_DAMAGE_THRESHOLD_MAX = 10;
+const COUNTER_DAMAGE = 5;
+const GRAPPLE_DAMAGE = 10;
+const GRAPPLE_LIMIT = 3;
 
 const ACTIONS = {
   punch: {
@@ -107,9 +107,17 @@ const GUARD_TYPES = {
   Grapple: "Grapple",
 };
 
-const COUNTER_DAMAGE = 5;
-const GRAPPLE_DAMAGE = 10;
-const GRAPPLE_LIMIT = 3;
+const SPEED_TYPES = {
+  Slow: "Slow",
+  Medium: "Medium",
+  Fast: "Fast",
+};
+
+const SPEED_MAP = {
+  [SPEED_TYPES.Slow]: 3000,
+  [SPEED_TYPES.Medium]: 2000,
+  [SPEED_TYPES.Fast]: 1000,
+};
 
 const POSITION_MAP = {
   [GRAPPLE_TYPES.Trip]: DODGE_TYPES.Low,
@@ -137,7 +145,7 @@ const DODGE_MAP = {
 const getExecute = ({ actionId, useTarget = false }) => async (interaction) => {
   const target = useTarget ? interaction.options.getUser("target") : "";
   const position = interaction.options.getString("position");
-  const { response, followUp } = global.engine.gameAction({
+  const { response, followUp, gameSpeedModifier } = global.engine.gameAction({
     guildId: interaction.guildId,
     playerId: interaction.user.id,
     targetId: target?.id,
@@ -151,7 +159,7 @@ const getExecute = ({ actionId, useTarget = false }) => async (interaction) => {
         .stamina;
     setTimeout(async () => {
       await interaction.followUp(followUp);
-    }, Math.abs(stamina * 1000));
+    }, Math.abs(stamina * gameSpeedModifier));
   }
 };
 
@@ -164,8 +172,6 @@ const getCrit = () => Math.random() > 0.77;
 
 module.exports = {
   GAME_STATUS,
-  GAME_TIC,
-  POLL_TIC,
   MAX_HP,
   MAX_STAMINA,
   ACTIONS,
@@ -185,4 +191,6 @@ module.exports = {
   getCrit,
   GRAPPLE_DAMAGE,
   GRAPPLE_LIMIT,
+  SPEED_TYPES,
+  SPEED_MAP,
 };

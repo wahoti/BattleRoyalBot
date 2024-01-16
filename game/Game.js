@@ -1,8 +1,6 @@
 const Player = require("./Player");
 const {
   GAME_STATUS,
-  GAME_TIC,
-  POLL_TIC,
   MAX_STAMINA,
   PLAYER_STATUS,
   PUNCH_TYPES,
@@ -19,28 +17,27 @@ const {
   GRAPPLE_TYPES,
   GRAPPLE_DAMAGE,
   GRAPPLE_LIMIT,
+  SPEED_MAP,
   getCrit,
 } = require("./CONST");
 
 class Game {
-  constructor(guildId) {
-    console.log("NEW GAME", guildId);
+  constructor({ guildId, speed }) {
+    console.log("NEW GAME", guildId, speed);
 
     this.guildId = guildId;
+    this.speed = speed;
 
     this.players = {};
     this.agents = {};
 
     this.gameInterval = null;
-    this.pollInterval = null;
 
     this.gameStatus = GAME_STATUS.CREATED;
     this.winner = null;
   }
 
-  gameStep() {}
-
-  pollStep() {
+  gameStep() {
     Object.values(this.players).forEach((player) => {
       if (player.stamina < MAX_STAMINA) {
         player.stamina += 1;
@@ -51,16 +48,12 @@ class Game {
   }
 
   setIntervals() {
-    this.pollInterval = setInterval(() => {
-      this.pollStep();
-    }, POLL_TIC);
     this.gameInterval = setInterval(() => {
       this.gameStep();
-    }, GAME_TIC);
+    }, SPEED_MAP[this.speed]);
   }
 
   clearIntervals() {
-    clearInterval(this.pollInterval);
     clearInterval(this.gameInterval);
   }
 
@@ -289,6 +282,7 @@ class Game {
           ephemeral: false,
         },
         followUp,
+        gameSpeedModifier: SPEED_MAP[this.speed],
       };
     }
 
@@ -316,6 +310,7 @@ class Game {
         ephemeral,
       },
       followUp,
+      gameSpeedModifier: SPEED_MAP[this.speed],
     };
   }
 
