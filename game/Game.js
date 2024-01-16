@@ -217,13 +217,13 @@ class Game {
     let adjustedCost = cost + this.players[playerId].staminaDamage;
 
     if (this.players[playerId].statusEffects[STATUS_EFFECTS.legInjured]) {
-      adjustedCost = adjustedCost * 2;
+      adjustedCost = cost * 1.5;
     }
 
     if (
       this.players[playerId].statusEffects[STATUS_EFFECTS.legSeverelyInjured]
     ) {
-      adjustedCost = adjustedCost * 2;
+      adjustedCost = cost * 2;
     }
 
     if (this.players[playerId].grapple) {
@@ -495,6 +495,10 @@ class Game {
         this.players[playerId].hp = Math.min(
           this.players[playerId].hp + healthRecovery,
           MAX_HP
+        );
+        this.players[playerId].legDamage = Math.max(
+          this.players[playerId].legDamage - healthRecovery,
+          0
         );
         specialResponse = `${healthRecovery} health recovered`;
         break;
