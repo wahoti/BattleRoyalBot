@@ -53,8 +53,8 @@ grapple status: grappling an opponent builds up their grapple level from 1 to 3.
 
 leg damage: attacks with leg damage build up a meter with negative effects at certain thresholds.
 
-- 5 damage: doubled stamina cost
-- 10 damage: doubled stamina cost again
+- 5 damage: 150% stamina cost
+- 10 damage: 200% stamina cost
 
 critical hits: attacks that can crit have a 23% chance for double damage.
 
