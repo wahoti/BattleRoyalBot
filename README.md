@@ -28,15 +28,15 @@ COMMANDS
 - - takedown (mid): stamina damage
 - - throw (high): health damage
 
-- /defend-dodge: pick 1 of 3 positions to dodge (low, mid, high)
+- /defend-dodge: dodge 2/3 incoming attack positions
 - - low is hit by mid
 - - mid is hit by high
 - - high is hit by low
 
-- /defend-counter: pick 1 of 3 position to counter
+- /defend-counter: pick 1 of 3 positions to counter
 - - evade and retaliate against an attack of chosen position
 
-- /defend-guard: reduce incoming damage, 3 types
+- /defend-guard: reduce incoming damage
 - - quick: recover stamina
 - - recover: recover health
 - - grapple: reduce your grapple level by one, defend against incoming grapples
