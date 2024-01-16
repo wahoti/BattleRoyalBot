@@ -150,7 +150,7 @@ const ACTIONS = {
 
 DEVELOPMENT NOTES
 
-https://discord.com/api/oauth2/authorize?client_id=1037462730812166155&permissions=2147551232&scope=bot%20applications.commands
+bot invite link: https://discord.com/api/oauth2/authorize?client_id=1037462730812166155&permissions=2147551232&scope=bot%20applications.commands
 
 hosting (DigitalOcean)
 
@@ -172,5 +172,3 @@ to clear stale commands
 
 - uncomment RESET_COMMANDS
 - run deploy_commands.js
-
-https://discord.com/oauth2/authorize?client_id=1037462730812166155&permissions=2147551232&scope=bot%20applications.commands
