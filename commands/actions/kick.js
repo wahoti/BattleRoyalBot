@@ -1,11 +1,11 @@
 const { SlashCommandBuilder } = require("discord.js");
 
-const { KICK_TYPES, getExecute } = require("../../game/CONST");
+const { KICK_TYPES, getExecute, ACTIONS } = require("../../game/CONST");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("attack-kick")
-    .setDescription("perform a kick attack")
+    .setDescription(`perform a kick attack, cost ${ACTIONS.kick.cost}`)
     .addStringOption((option) =>
       option
         .setName("position")

@@ -1,11 +1,11 @@
 const { SlashCommandBuilder } = require("discord.js");
 
-const { GRAPPLE_TYPES, getExecute } = require("../../game/CONST");
+const { GRAPPLE_TYPES, getExecute, ACTIONS } = require("../../game/CONST");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("attack-grapple")
-    .setDescription("perform a grapple attack")
+    .setDescription(`perform a grapple attack, cost ${ACTIONS.grapple.cost}`)
     .addStringOption((option) =>
       option
         .setName("position")

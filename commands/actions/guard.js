@@ -1,11 +1,11 @@
 const { SlashCommandBuilder } = require("discord.js");
 
-const { getExecute, GUARD_TYPES } = require("../../game/CONST");
+const { getExecute, GUARD_TYPES, ACTIONS } = require("../../game/CONST");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("defend-guard")
-    .setDescription("reduce incoming damage")
+    .setDescription(`reduce incoming damage, cost ${ACTIONS.guard.cost}`)
     .addStringOption((option) =>
       option
         .setName("position")
