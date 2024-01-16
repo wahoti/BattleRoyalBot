@@ -13,18 +13,18 @@ COMMANDS
 - /game-status: see status of current game
 - /test-game: create and start a test game with the bot
 
-- /attack-punch: basic attack, 3 types
+- /attack-punch: basic attack, cost 10, 2 damage
 - - body (low): stamina damage
-- - jab (mid): recover stamina
+- - jab (mid): refund stamina (shorter cooldown)
 - - cross (high): critical hit chance 23% for double damage
 
-- /attack-kick: higher cost higher damage basic attack, 3 types
+- /attack-kick: basic attack, cost 20, 4 damage
 - - leg (low): leg damage
 - - body (mid): stamina damage
 - - high (high): critical hit chance 23% for double damage
 
-- /attack-grapple: basic attack that increments grapple status, 3 types
-- - trip (low): recover stamina
+- /attack-grapple: basic attack, cost 15, inflicts grapple status
+- - trip (low): refund stamina (shorter cooldown)
 - - takedown (mid): stamina damage
 - - throw (high): health damage
 
@@ -37,7 +37,7 @@ COMMANDS
 - - evade and retaliate against an attack of chosen position
 
 - /defend-guard: reduce incoming damage
-- - quick: recover stamina
+- - quick: refund stamina (shorter cooldown)
 - - recover: recover health
 - - grapple: reduce your grapple level by one, defend against incoming grapples
 
