@@ -24,18 +24,18 @@ class Engine {
     if (!this.games[guildId])
       return {
         content: "game not found, create one first",
-        error: true,
+        error: false,
       };
     if (this.games[guildId].gameStatus !== GAME_STATUS.CREATED) {
       return {
-        error: true,
         content: `game not start-able, ${this.games[guildId].gameStatus}`,
+        error: false,
       };
     }
     if (Object.keys(this.games[guildId].players).length < 2) {
       return {
-        error: true,
         content: `game not start-able, not enough players`,
+        error: false,
       };
     }
     this.games[guildId].gameStart();
