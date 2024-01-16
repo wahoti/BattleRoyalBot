@@ -13,13 +13,6 @@ COMMANDS
 - /game-status: see status of current game
 - /test-game: create and start a test game with the bot
 
-- /attack-punch
-- /attack-kick
-- /attack-grapple
-- /defend-dodge
-- /defend-counter
-- /defend-guard
-
 - /attack-punch: basic attack, 3 types
 - - body (low): stamina damage
 - - jab (mid): recover stamina
