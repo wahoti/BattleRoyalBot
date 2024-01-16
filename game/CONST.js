@@ -19,7 +19,7 @@ const LEG_DAMAGE_THRESHOLD_MAX = 10;
 
 const ACTIONS = {
   punch: {
-    name: "punch",
+    name: "Punch",
     cost: 10,
     damage: 2,
     props: {
@@ -30,7 +30,7 @@ const ACTIONS = {
     },
   },
   kick: {
-    name: "kick",
+    name: "Kick",
     cost: 20,
     damage: 4,
     props: {
@@ -41,17 +41,26 @@ const ACTIONS = {
     },
   },
   dodge: {
-    name: "dodge",
-    cost: 25,
+    name: "Dodge",
+    cost: 10,
     props: {
-      duration: 25,
+      duration: 15,
     },
   },
   counter: {
-    name: "counter",
-    cost: 15,
+    name: "Counter",
+    cost: 5,
     props: {
       duration: 15,
+    },
+  },
+  guard: {
+    name: "Guard",
+    cost: 8,
+    props: {
+      duration: 15,
+      staminaRecovery: 4,
+      healthRecovery: 2,
     },
   },
 };
@@ -78,6 +87,12 @@ const DODGE_TYPES = {
   Low: "Low",
   Mid: "Mid",
   High: "High",
+};
+
+const GUARD_TYPES = {
+  Quick: "Quick",
+  Recover: "Recover",
+  Grapple: "Grapple",
 };
 
 const COUNTER_DAMAGE = 5;
@@ -150,4 +165,5 @@ module.exports = {
   POSITION_MAP,
   DODGE_MAP,
   COUNTER_DAMAGE,
+  GUARD_TYPES,
 };

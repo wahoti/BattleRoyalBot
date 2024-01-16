@@ -14,6 +14,8 @@ const {
   DODGE_MAP,
   POSITION_MAP,
   COUNTER_DAMAGE,
+  GUARD_TYPES,
+  MAX_HP,
 } = require("./CONST");
 
 class Game {
@@ -112,24 +114,53 @@ class Game {
   }
 
   damagePlayer({ targetId, damage, crit }) {
-    const _damage = crit ? damage * 2 : damage;
+    let _damage = damage;
+    let blocked = "";
+
+    if (crit) _damage = _damage * 2;
+    if (this.players[targetId].guard) {
+      blocked = " (blocked)";
+      _damage = _damage / 2;
+    }
+
     this.players[targetId].hp -= _damage;
-    const damageString = `${this.players[targetId].name} took ${_damage} damage`;
+
+    const damageString = `${this.players[targetId].name} took ${_damage} damage${blocked}`;
+
     if (this.players[targetId].hp <= 0) {
       this.players[targetId].status = PLAYER_STATUS.DISABLED;
       const gameOverResponse = this.checkGameOver();
       return `${damageString}\n${this.players[targetId].name} was disabled!${gameOverResponse}`;
     }
+
     return damageString;
   }
 
   staminaDamagePlayer({ targetId, damage }) {
-    this.players[targetId].staminaDamage += damage;
-    return `${this.players[targetId].name} took ${damage} stamina damage`;
+    let _damage = damage;
+    let blocked = "";
+
+    if (this.players[targetId].guard) {
+      blocked = " (blocked)";
+      _damage = _damage / 2;
+    }
+
+    this.players[targetId].staminaDamage += _damage;
+
+    return `${this.players[targetId].name} took ${_damage} stamina damage${blocked}`;
   }
 
   legDamagePlayer({ targetId, damage }) {
-    this.players[targetId].legDamage += damage;
+    let _damage = damage;
+    let blocked = "";
+
+    if (this.players[targetId].guard) {
+      blocked = " (blocked)";
+      _damage = _damage / 2;
+    }
+
+    this.players[targetId].legDamage += _damage;
+
     if (this.players[targetId].legDamage >= LEG_DAMAGE_THRESHOLD_MAX) {
       this.players[targetId].statusEffects[
         STATUS_EFFECTS.legSeverelyInjured
@@ -140,7 +171,7 @@ class Game {
       this.players[targetId].statusEffects[STATUS_EFFECTS.legInjured] = true;
       return `${this.players[targetId].name} legs were injured!`;
     }
-    return `${this.players[targetId].name} took ${damage} leg damage`;
+    return `${this.players[targetId].name} took ${_damage} leg damage${legDamage}`;
   }
 
   payActionCost({ playerId, cost }) {
@@ -170,7 +201,7 @@ class Game {
   }
 
   doAction({ playerId, targetId, position, actionId }) {
-    const { cost, damage, props } = ACTIONS[actionId];
+    const { cost, damage, name, props } = ACTIONS[actionId];
     console.log("actionData", { actionId, cost, damage, props });
 
     const followUp = { content: "stamina recovered", ephemeral: true };
@@ -187,7 +218,7 @@ class Game {
       this.players[targetId].dodge &&
       DODGE_MAP[this.players[targetId].dodge] !== POSITION_MAP[position]
     ) {
-      preventAction = `${this.players[targetId].name} dodged the attack (${actionId} ${position} ${POSITION_MAP[position]})`;
+      preventAction = `${this.players[targetId].name} dodged the attack (${name} ${position} ${POSITION_MAP[position]})`;
     }
 
     if (
@@ -251,19 +282,19 @@ class Game {
     switch (position) {
       case PUNCH_TYPES.Jab:
         this.players[playerId].stamina += recovery;
-        specialResponse = `${recovery} stamina recovered (${position})`;
+        specialResponse = `${recovery} stamina recovered`;
         break;
       case PUNCH_TYPES.Cross:
         if (Math.random() > 0.77) {
-          specialResponse = `critical hit! extra damage (${position})`;
+          specialResponse = `critical hit! extra damage`;
           crit = true;
         }
         break;
       case PUNCH_TYPES.Body:
-        specialResponse = `${this.staminaDamagePlayer({
+        specialResponse = this.staminaDamagePlayer({
           targetId,
           damage: staminaDamage,
-        })} (body)`;
+        });
         break;
       default:
     }
@@ -290,15 +321,15 @@ class Game {
     switch (position) {
       case KICK_TYPES.Head:
         if (Math.random() > 0.77) {
-          specialResponse = `critical hit! extra damage (${position} kick)`;
+          specialResponse = `critical hit! extra damage`;
           crit = true;
         }
         break;
       case KICK_TYPES.Body:
-        specialResponse = `${this.staminaDamagePlayer({
+        specialResponse = this.staminaDamagePlayer({
           targetId,
           damage: staminaDamage,
-        })} (${position} kick)`;
+        });
         break;
       case KICK_TYPES.Leg:
         specialResponse = this.legDamagePlayer({ targetId, damage: legDamage });
@@ -348,7 +379,7 @@ class Game {
 
     let actionResponse = "";
     actionResponse += this.players[playerId].name;
-    actionResponse += ` is preparing to counter ${position} attacks (${duration})`;
+    actionResponse += ` is preparing to counter ${position} (${duration})`;
 
     this.players[playerId].counter = position;
     setTimeout(() => {
@@ -357,6 +388,49 @@ class Game {
 
     return {
       ephemeral: true,
+      actionResponse,
+      specialResponse,
+      crit: false,
+    };
+  }
+
+  guard({ playerId, props, position }) {
+    let specialResponse = "";
+
+    const { duration, staminaRecovery, healthRecovery } = props;
+
+    switch (position) {
+      case GUARD_TYPES.Quick:
+        this.players[playerId].stamina += staminaRecovery;
+        specialResponse = `${staminaRecovery} stamina recovered`;
+        break;
+      case GUARD_TYPES.Recover:
+        this.players[playerId].hp = Math.min(
+          this.players[playerId].hp + healthRecovery,
+          MAX_HP
+        );
+        specialResponse = `${healthRecovery} health recovered`;
+        break;
+      case GUARD_TYPES.Grapple:
+        break;
+      default:
+    }
+
+    // guard types?
+    // quick guard
+    // recovery guard
+    // grapple guard
+    this.players[playerId].guard = position;
+    setTimeout(() => {
+      this.players[playerId].guard = null;
+    }, duration * 1000);
+
+    let actionResponse = "";
+    actionResponse += this.players[playerId].name;
+    actionResponse += ` is guarding attacks (${duration})`;
+
+    return {
+      ephemeral: false,
       actionResponse,
       specialResponse,
       crit: false,

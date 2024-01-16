@@ -10,9 +10,13 @@ class Player {
     this.name = name;
     this.id = playerId;
     this.status = PLAYER_STATUS.ACTIVE;
+
+    // STATUS
     this.statusEffects = {};
     this.dodge = null;
     this.counter = null;
+    this.guard = null;
+    this.grapple = 0;
   }
 }
 
