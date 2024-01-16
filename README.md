@@ -1,6 +1,6 @@
 GAME INFO
 
-In BattleRoyalBot players participate in a free for all combat where players take damage to their health points until there is only one player left. Players perform actions through / commands. Each action has a stamina cost. Stamina refunds at 1 point a second so you can think of stamina cost as a cooldown before your next action.
+In BattleRoyalBot players participate in a free for all combat where players take damage to their health points until there is only one player left. Players perform actions through / commands. Each action has a stamina cost. Stamina refunds at 1 point a second so you can think of stamina cost as a cooldown before your next action. The bot sends you a message when your stamina recovers and you can act again.
 
 /game-create: creates a game and auto joins it
 /game-join: joins a game
