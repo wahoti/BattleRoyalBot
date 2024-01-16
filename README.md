@@ -75,7 +75,6 @@ hosting (DigitalOcean)
 - pm2 start index.js
 - pm2 stop 0
 - pm2 list
-- pm2 delete
 
 to add a new command
 
@@ -88,3 +87,5 @@ to clear stale commands
 
 - uncomment RESET_COMMANDS
 - run deploy_commands.js
+
+https://discord.com/oauth2/authorize?client_id=1037462730812166155&permissions=2147551232&scope=bot%20applications.commands
