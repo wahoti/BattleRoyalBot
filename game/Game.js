@@ -199,7 +199,7 @@ class Game {
       this.players[targetId].statusEffects[STATUS_EFFECTS.legInjured] = true;
       return `${this.players[targetId].name} legs were injured!`;
     }
-    return `${this.players[targetId].name} took ${_damage} leg damage${legDamage}`;
+    return `${this.players[targetId].name} took ${_damage} leg damage${blocked}`;
   }
 
   payActionCost({ playerId, cost }) {

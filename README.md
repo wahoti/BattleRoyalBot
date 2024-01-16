@@ -72,7 +72,7 @@ hosting (DigitalOcean)
 - https://devdojo.com/howtoubuntu/run-a-discordjs-bot-on-ubuntu
 - https://www.npmjs.com/package/pm2
 - https://pm2.keymetrics.io/docs/usage/cluster-mode/
-- pm2 start app.js
+- pm2 start index.js
 - pm2 list
 - pm2 delete
 
