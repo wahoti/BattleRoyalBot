@@ -165,3 +165,12 @@ to clear stale commands
 
 - uncomment RESET_COMMANDS
 - run deploy_commands.js
+
+depends on config.json
+
+```
+{
+  "token": "your token",
+  "clientId": "your client id",
+}
+```
