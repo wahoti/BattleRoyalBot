@@ -29,7 +29,7 @@ Each server has 1 game going at a time. If you create a new game it will overrid
 - - high (high): critical hit chance 23% for double damage
 
 - grapple: basic attack that increments grapple status, 3 types
-- - trip (low): recover stamina, 1 point of leg damage
+- - trip (low): recover stamina
 - - takedown (mid): stamina damage
 - - throw (high): health damage
 
@@ -44,7 +44,7 @@ Each server has 1 game going at a time. If you create a new game it will overrid
 - guard: reduce incoming damage, 3 types
 - - quick: recover stamina
 - - recover: recover health
-- - grapple: defend against grapples + grapple anyone who attacks you
+- - grapple: reduce your grapple level by one, defend against incoming grapples
 
 stamina recovers at 1 point a second
 

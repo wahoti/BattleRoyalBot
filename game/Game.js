@@ -16,6 +16,10 @@ const {
   COUNTER_DAMAGE,
   GUARD_TYPES,
   MAX_HP,
+  GRAPPLE_TYPES,
+  GRAPPLE_DAMAGE,
+  GRAPPLE_LIMIT,
+  getCrit,
 } = require("./CONST");
 
 class Game {
@@ -83,6 +87,7 @@ class Game {
       statusString += `\n\thp ${player.hp},  `;
       statusString += `\n\tstamina: ${player.stamina}, `;
       statusString += `\n\tstaminaDamage: ${player.staminaDamage}`;
+      statusString += `\n\tgrapple level: ${player.grapple}`;
       Object.keys(player.statusEffects).forEach((statusEffect) => {
         if (player.statusEffects[statusEffect]) {
           statusString += `\n\t${statusEffect}`;
@@ -113,7 +118,30 @@ class Game {
     return "";
   }
 
-  damagePlayer({ targetId, damage, crit }) {
+  grapplePlayer({ targetId, playerId, position }) {
+    if (this.players[targetId].guard === GUARD_TYPES.Grapple) {
+      return `${this.players[targetId].name} blocked the grapple`;
+    }
+
+    this.players[targetId].grapple += 1;
+
+    let actionResponse = "";
+    actionResponse += this.players[playerId].name;
+    actionResponse += ` grappled (${position}) `;
+    actionResponse += this.players[targetId].name;
+    actionResponse += ` (level ${this.players[targetId].grapple})`;
+
+    if (this.players[targetId].grapple >= GRAPPLE_LIMIT) {
+      actionResponse += `\n${this.damagePlayer({
+        targetId: playerId,
+        damage: GRAPPLE_DAMAGE,
+      })}`;
+    }
+
+    return actionResponse;
+  }
+
+  damagePlayer({ targetId, damage, crit = false }) {
     let _damage = damage;
     let blocked = "";
 
@@ -226,14 +254,14 @@ class Game {
       this.players[targetId].counter &&
       this.players[targetId].counter === POSITION_MAP[position]
     ) {
-      const crit = Math.random() > 0.77;
+      const crit = getCrit();
       preventAction = `${this.players[targetId].name} countered the attack (${actionId} ${position} ${POSITION_MAP[position]})`;
-      if (crit) preventAction += "\ncritical hit!";
-      preventAction += `\n${this.damagePlayer({
+      if (crit) preventAction += "critical hit!\n";
+      preventAction += this.damagePlayer({
         targetId: playerId,
         damage: COUNTER_DAMAGE,
         crit,
-      })}`;
+      });
     }
 
     if (preventAction) {
@@ -277,16 +305,16 @@ class Game {
     let specialResponse = "";
     let crit = false;
 
-    const { recovery, staminaDamage } = props;
+    const { staminaRecovery, staminaDamage } = props;
 
     switch (position) {
       case PUNCH_TYPES.Jab:
-        this.players[playerId].stamina += recovery;
-        specialResponse = `${recovery} stamina recovered`;
+        this.players[playerId].stamina += staminaRecovery;
+        specialResponse = `${staminaRecovery} stamina recovered`;
         break;
       case PUNCH_TYPES.Cross:
-        if (Math.random() > 0.77) {
-          specialResponse = `critical hit! extra damage`;
+        if (getCrit()) {
+          specialResponse = "critical hit!";
           crit = true;
         }
         break;
@@ -320,8 +348,8 @@ class Game {
 
     switch (position) {
       case KICK_TYPES.Head:
-        if (Math.random() > 0.77) {
-          specialResponse = `critical hit! extra damage`;
+        if (getCrit()) {
+          specialResponse = "critical hit!";
           crit = true;
         }
         break;
@@ -341,6 +369,46 @@ class Game {
     actionResponse += this.players[playerId].name;
     actionResponse += ` kicked (${position}) `;
     actionResponse += this.players[targetId].name;
+
+    return {
+      ephemeral: false,
+      actionResponse,
+      specialResponse,
+      crit,
+    };
+  }
+
+  grapple({ playerId, targetId, position, props }) {
+    let specialResponse = "";
+    let crit = false;
+
+    const { staminaDamage, staminaRecovery, throwDamage } = props;
+
+    switch (position) {
+      case GRAPPLE_TYPES.Trip:
+        // specialResponse = this.legDamagePlayer({ targetId, damage: legDamage });
+        this.players[playerId].stamina += staminaRecovery;
+        specialResponse = `${staminaRecovery} stamina recovered`;
+        break;
+      case GRAPPLE_TYPES.Takedown:
+        specialResponse = this.staminaDamagePlayer({
+          targetId,
+          damage: staminaDamage,
+        });
+        break;
+      case GRAPPLE_TYPES.Throw:
+        const crit = getCrit();
+        if (crit) specialResponse += "critical hit!\n";
+        specialResponse += this.damagePlayer({
+          targetId,
+          damage: throwDamage,
+          crit,
+        });
+        break;
+      default:
+    }
+
+    let actionResponse = this.grapplePlayer({ targetId, playerId, position });
 
     return {
       ephemeral: false,
@@ -412,14 +480,15 @@ class Game {
         specialResponse = `${healthRecovery} health recovered`;
         break;
       case GUARD_TYPES.Grapple:
+        this.players[playerId].grapple = Math.max(
+          0,
+          this.players[playerId].grapple - 1
+        );
+        specialResponse = `reduced grapple level to ${this.players[playerId].grapple}`;
         break;
       default:
     }
 
-    // guard types?
-    // quick guard
-    // recovery guard
-    // grapple guard
     this.players[playerId].guard = position;
     setTimeout(() => {
       this.players[playerId].guard = null;

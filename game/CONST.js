@@ -23,7 +23,7 @@ const ACTIONS = {
     cost: 10,
     damage: 2,
     props: {
-      recovery: 5,
+      staminaRecovery: 5,
       staminaDamage: 4,
       dodgeable: true,
       counterable: true,
@@ -36,6 +36,18 @@ const ACTIONS = {
     props: {
       staminaDamage: 8,
       legDamage: 4,
+      dodgeable: true,
+      counterable: true,
+    },
+  },
+  grapple: {
+    name: "Grapple",
+    cost: 15,
+    damage: 0,
+    props: {
+      staminaDamage: 4,
+      staminaRecovery: 5,
+      throwDamage: 2,
       dodgeable: true,
       counterable: true,
     },
@@ -96,6 +108,8 @@ const GUARD_TYPES = {
 };
 
 const COUNTER_DAMAGE = 5;
+const GRAPPLE_DAMAGE = 10;
+const GRAPPLE_LIMIT = 3;
 
 const POSITION_MAP = {
   [GRAPPLE_TYPES.Trip]: DODGE_TYPES.Low,
@@ -146,6 +160,8 @@ const STATUS_EFFECTS = {
   legSeverelyInjured: "leg severely injured",
 };
 
+const getCrit = () => Math.random() > 0.77;
+
 module.exports = {
   GAME_STATUS,
   GAME_TIC,
@@ -166,4 +182,7 @@ module.exports = {
   DODGE_MAP,
   COUNTER_DAMAGE,
   GUARD_TYPES,
+  getCrit,
+  GRAPPLE_DAMAGE,
+  GRAPPLE_LIMIT,
 };
