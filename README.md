@@ -73,6 +73,7 @@ hosting (DigitalOcean)
 - https://www.npmjs.com/package/pm2
 - https://pm2.keymetrics.io/docs/usage/cluster-mode/
 - pm2 start index.js
+- pm2 stop 0
 - pm2 list
 - pm2 delete
 

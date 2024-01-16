@@ -130,10 +130,18 @@ class Engine {
         },
       };
     }
-    if (this.games[guildId].players[playerId].status !== PLAYER_STATUS.ACTIVE) {
+    // if (this.games[guildId].players[playerId].status !== PLAYER_STATUS.ACTIVE) {
+    //   return {
+    //     response: {
+    //       content: `player inactive, ${this.games[guildId].players[playerId].status}`,
+    //       ephemeral: true,
+    //     },
+    //   };
+    // }
+    if (this.games[guildId].players[playerId].hp <= 0) {
       return {
         response: {
-          content: `player inactive, ${this.games[guildId].players[playerId].status}`,
+          content: "player disabled",
           ephemeral: true,
         },
       };

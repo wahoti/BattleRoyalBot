@@ -83,8 +83,9 @@ class Game {
     response += `players: ${Object.keys(this.players).length}`;
     const playersString = Object.values(this.players).reduce((acc, player) => {
       let statusString = `${acc}\n${player.name}: ${player.status}`;
-      if (player.status !== PLAYER_STATUS.ACTIVE) return statusString;
+      // if (player.status !== PLAYER_STATUS.ACTIVE) return statusString;
       statusString += `\n\thp ${player.hp},  `;
+      if (player.hp < 0) return statusString;
       statusString += `\n\tstamina: ${player.stamina}, `;
       statusString += `\n\tstaminaDamage: ${player.staminaDamage}`;
       statusString += `\n\tgrapple level: ${player.grapple}`;
@@ -104,7 +105,8 @@ class Game {
     let activePlayer = "no one";
 
     Object.values(this.players).forEach((player) => {
-      if (player.status === PLAYER_STATUS.ACTIVE) {
+      // if (player.status === PLAYER_STATUS.ACTIVE)
+      if (player.hp > 0) {
         activePlayers += 1;
         activePlayer = player.name;
       }
@@ -123,7 +125,10 @@ class Game {
       return `${this.players[targetId].name} blocked the grapple`;
     }
 
-    this.players[targetId].grapple += 1;
+    this.players[targetId].grapple = Math.min(
+      GRAPPLE_LIMIT,
+      this.players[targetId].grapple + 1
+    );
 
     let actionResponse = "";
     actionResponse += this.players[playerId].name;
@@ -135,13 +140,14 @@ class Game {
       actionResponse += `\n${this.damagePlayer({
         targetId: playerId,
         damage: GRAPPLE_DAMAGE,
+        playerId,
       })}`;
     }
 
     return actionResponse;
   }
 
-  damagePlayer({ targetId, damage, crit = false }) {
+  damagePlayer({ playerId, targetId, damage, crit = false }) {
     let _damage = damage;
     let blocked = "";
 
@@ -149,6 +155,11 @@ class Game {
     if (this.players[targetId].guard) {
       blocked = " (blocked)";
       _damage = _damage / 2;
+    }
+
+    if (this.players[playerId].grapple) {
+      blocked += " (grappled)";
+      _damage = Math.max(0, _damage - this.players[playerId].grapple);
     }
 
     this.players[targetId].hp -= _damage;
@@ -204,13 +215,19 @@ class Game {
 
   payActionCost({ playerId, cost }) {
     let adjustedCost = cost + this.players[playerId].staminaDamage;
+
     if (this.players[playerId].statusEffects[STATUS_EFFECTS.legInjured]) {
       adjustedCost = adjustedCost * 2;
     }
+
     if (
       this.players[playerId].statusEffects[STATUS_EFFECTS.legSeverelyInjured]
     ) {
       adjustedCost = adjustedCost * 2;
+    }
+
+    if (this.players[playerId].grapple) {
+      adjustedCost += this.players[playerId].grapple;
     }
 
     this.players[playerId].stamina =
@@ -258,6 +275,7 @@ class Game {
       preventAction = `${this.players[targetId].name} countered the attack (${actionId} ${position} ${POSITION_MAP[position]})`;
       if (crit) preventAction += "critical hit!\n";
       preventAction += this.damagePlayer({
+        playerId: targetId,
         targetId: playerId,
         damage: COUNTER_DAMAGE,
         crit,
@@ -284,7 +302,7 @@ class Game {
     );
 
     const damageResponse = damage
-      ? this.damagePlayer({ targetId, damage, crit })
+      ? this.damagePlayer({ targetId, damage, crit, playerId })
       : "";
 
     return {
@@ -403,6 +421,7 @@ class Game {
           targetId,
           damage: throwDamage,
           crit,
+          playerId,
         });
         break;
       default:

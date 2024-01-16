@@ -29,13 +29,21 @@ module.exports = {
     if (error3) {
       await interaction.reply({ content: response3, ephemeral: true });
     }
+    const { content: response5, error: error5 } = global.engine.gameJoin({
+      guildId: interaction.guildId,
+      playerId: "poopoo",
+      name: "BattleRoyalBot2",
+    });
+    if (error5) {
+      await interaction.reply({ content: response5, ephemeral: true });
+    }
     const { content: response4, error: error4 } = global.engine.gameStart(
       interaction.guildId
     );
     if (error4) {
       await interaction.reply({ content: response3, ephemeral: true });
     }
-    const response = `${response1}\n${response2}\n${response3}\n${response4}`;
+    const response = `${response1}\n${response2}\n${response3}\n${response5}\n${response4}`;
     await interaction.reply({ content: response, ephemeral: true });
   },
 };
