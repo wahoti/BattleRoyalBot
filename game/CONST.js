@@ -42,9 +42,16 @@ const ACTIONS = {
   },
   dodge: {
     name: "dodge",
-    cost: 1,
+    cost: 25,
     props: {
-      duration: 30,
+      duration: 25,
+    },
+  },
+  counter: {
+    name: "counter",
+    cost: 15,
+    props: {
+      duration: 15,
     },
   },
 };
@@ -72,6 +79,8 @@ const DODGE_TYPES = {
   Mid: "Mid",
   High: "High",
 };
+
+const COUNTER_DAMAGE = 5;
 
 const POSITION_MAP = {
   [GRAPPLE_TYPES.Trip]: DODGE_TYPES.Low,
@@ -140,4 +149,5 @@ module.exports = {
   DODGE_TYPES,
   POSITION_MAP,
   DODGE_MAP,
+  COUNTER_DAMAGE,
 };

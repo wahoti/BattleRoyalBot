@@ -10,9 +10,7 @@ class Player {
     this.name = name;
     this.id = playerId;
     this.status = PLAYER_STATUS.ACTIVE;
-    this.statusEffects = {
-      poopoo: "doodoo",
-    };
+    this.statusEffects = {};
     this.dodge = null;
     this.counter = null;
   }

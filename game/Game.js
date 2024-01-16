@@ -13,6 +13,7 @@ const {
   STATUS_EFFECTS,
   DODGE_MAP,
   POSITION_MAP,
+  COUNTER_DAMAGE,
 } = require("./CONST");
 
 class Game {
@@ -183,12 +184,26 @@ class Game {
 
     if (
       props.dodgeable &&
+      this.players[targetId].dodge &&
       DODGE_MAP[this.players[targetId].dodge] !== POSITION_MAP[position]
     ) {
-      preventAction = `${this.players[targetId].name} dodged the attack (${actionId} ${position})`;
+      preventAction = `${this.players[targetId].name} dodged the attack (${actionId} ${position} ${POSITION_MAP[position]})`;
     }
 
-    // if (props.counterable)
+    if (
+      props.counterable &&
+      this.players[targetId].counter &&
+      this.players[targetId].counter === POSITION_MAP[position]
+    ) {
+      const crit = Math.random() > 0.77;
+      preventAction = `${this.players[targetId].name} countered the attack (${actionId} ${position} ${POSITION_MAP[position]})`;
+      if (crit) preventAction += "\ncritical hit!";
+      preventAction += `\n${this.damagePlayer({
+        targetId: playerId,
+        damage: COUNTER_DAMAGE,
+        crit,
+      })}`;
+    }
 
     if (preventAction) {
       return {
@@ -320,6 +335,28 @@ class Game {
 
     return {
       ephemeral: false,
+      actionResponse,
+      specialResponse,
+      crit: false,
+    };
+  }
+
+  counter({ playerId, position, props }) {
+    let specialResponse = "";
+
+    const { duration } = props;
+
+    let actionResponse = "";
+    actionResponse += this.players[playerId].name;
+    actionResponse += ` is preparing to counter ${position} attacks (${duration})`;
+
+    this.players[playerId].counter = position;
+    setTimeout(() => {
+      this.players[playerId].counter = null;
+    }, duration * 1000);
+
+    return {
+      ephemeral: true,
       actionResponse,
       specialResponse,
       crit: false,
