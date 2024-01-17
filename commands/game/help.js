@@ -59,7 +59,7 @@ const HELP_MAP = {
   [HELP_TYPES.GameActions]: `GAME ACTION COMMANDS
   - /act-punch: basic attack, cost 10, 2 damage
 - - body (low): stamina damage
-- - jab (mid): refund stamina (shorter cooldown)
+- - jab (mid): refund 5 stamina (shorter cooldown)
 - - cross (high): critical hit chance 23% for double damage
 
 - /act-kick: basic attack, cost 20, 4 damage
@@ -68,27 +68,27 @@ const HELP_MAP = {
 - - high (high): critical hit chance 23% for double damage
 
 - /act-grapple: basic attack, cost 15, inflicts grapple status
-- - trip (low): refund stamina (shorter cooldown)
+- - trip (low): refund 5 stamina (shorter cooldown)
 - - takedown (mid): stamina damage
 - - throw (high): health damage
 
-- /act-dodge: dodge 2/3 incoming attack positions
+- /act-dodge: dodge 2/3 incoming attack positions, cost 10, duration 15
 - - low is hit by mid
 - - mid is hit by high
 - - high is hit by low
 
-- /act-counter: pick 1 of 3 positions to counter
+- /act-counter: pick 1 of 3 positions to counter, cost 5, duration 15
 - - evade and retaliate against an attack of chosen position
 
-- /act-guard: reduce incoming damage
-- - quick: refund stamina (shorter cooldown)
+- /act-guard: reduce incoming damage by 50%, cost 8, duration 15
+- - quick: refund 4 stamina (shorter cooldown)
 - - recover: recover health
 - - grapple: reduce your grapple level by one, defend against incoming grapples
 
-- /act-taunt: utility effects, double effectiveness when half health
+- /act-taunt: utility effects, double effectiveness when half health, cost 5
 - - distract: apply weak to all opponents
 - - rage: apply rage to self
-- - throw: 1 damage to all opponents`,
+- - throw: 1 damage to all opponents, can crit`,
 };
 
 module.exports = {
