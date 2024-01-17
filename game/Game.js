@@ -558,6 +558,15 @@ class Game {
         )}s)`;
         break;
       case GUARD_TYPES.Recover:
+        if (this.players[playerId].hp < MAX_HP)
+          specialResponse = `${healthRecovery} health recovered`;
+        if (
+          this.players[playerId].hp < MAX_HP &&
+          this.players[playerId].legDamage
+        )
+          specialResponse += "\n";
+        if (this.players[playerId].legDamage)
+          specialResponse += `${healthRecovery} leg health recovered`;
         this.players[playerId].hp = Math.min(
           this.players[playerId].hp + healthRecovery,
           MAX_HP
@@ -566,14 +575,17 @@ class Game {
           this.players[playerId].legDamage - healthRecovery,
           0
         );
-        specialResponse = `${healthRecovery} health recovered`;
         break;
       case GUARD_TYPES.Grapple:
-        this.players[playerId].grapple = Math.max(
-          0,
-          this.players[playerId].grapple - 1
-        );
-        specialResponse = `reduced grapple level to ${this.players[playerId].grapple}`;
+        if (this.players[playerId].grapple) {
+          specialResponse = `reduced grapple level to ${
+            this.players[playerId].grapple - 1
+          }`;
+          this.players[playerId].grapple = Math.max(
+            0,
+            this.players[playerId].grapple - 1
+          );
+        }
         break;
       default:
     }

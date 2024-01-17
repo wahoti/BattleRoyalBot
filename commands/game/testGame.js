@@ -31,6 +31,7 @@ module.exports = {
       playerId: "1037462730812166155",
       name: "BattleRoyalBot",
       bot: BOT_TYPES.Lv1,
+      // bot: BOT_TYPES.AFK,
     });
     if (error3) {
       await interaction.reply({ content: response3, ephemeral: true });
@@ -40,6 +41,7 @@ module.exports = {
       playerId: "poopoo",
       name: "Cool Guy",
       bot: BOT_TYPES.Lv2,
+      // bot: BOT_TYPES.AFK,
     });
     if (error5) {
       await interaction.reply({ content: response5, ephemeral: true });
