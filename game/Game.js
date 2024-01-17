@@ -161,7 +161,7 @@ class Game {
     actionResponse += this.players[playerId].name;
     actionResponse += ` grappled (${position}) `;
     actionResponse += this.players[targetId].name;
-    actionResponse += ` (level ${this.players[targetId].grapple})`;
+    actionResponse += ` (grapple ${this.players[targetId].grapple})`;
 
     if (this.players[targetId].grapple >= GRAPPLE_LIMIT) {
       actionResponse += `\n${this.damagePlayer({
@@ -224,9 +224,9 @@ class Game {
 
     this.players[targetId].staminaDamage += _damage;
 
-    return `${
-      this.players[targetId].name
-    } took ${_damage} stamina (${this.getDuration(_damage)}s) damage${blocked}`;
+    return `${this.players[targetId].name} took (${this.getDuration(
+      _damage
+    )}s) stamina damage${blocked}`;
   }
 
   legDamagePlayer({ targetId, damage }) {
@@ -272,8 +272,9 @@ class Game {
       this.players[playerId].stamina - adjustedCost;
     this.players[playerId].staminaDamage = 0;
 
-    let costResponse = `${this.players[playerId].name} used ${adjustedCost} stamina`;
-    costResponse += ` (${this.getDuration(adjustedCost)}s)`;
+    const costResponse = `${
+      this.players[playerId].name
+    } used (${this.getDuration(adjustedCost)}s) stamina`;
 
     return costResponse;
   }
@@ -316,7 +317,7 @@ class Game {
       this.players[targetId].dodge &&
       DODGE_MAP[this.players[targetId].dodge] !== POSITION_MAP[position]
     ) {
-      preventAction = `${this.players[targetId].name} dodged the attack (${name} ${position} ${POSITION_MAP[position]})`;
+      preventAction = `${this.players[targetId].name} dodged the attack (${name} ${position})`;
     }
 
     if (
@@ -325,7 +326,7 @@ class Game {
       this.players[targetId].counter === POSITION_MAP[position]
     ) {
       const crit = getCrit();
-      preventAction = `${this.players[targetId].name} countered the attack (${actionId} ${position} ${POSITION_MAP[position]})`;
+      preventAction = `${this.players[targetId].name} countered the attack (${actionId} ${position})`;
       if (crit) preventAction += "\ncritical hit!\n";
       preventAction += `\n${this.damagePlayer({
         playerId: targetId,
@@ -383,9 +384,9 @@ class Game {
     switch (position) {
       case PUNCH_TYPES.Jab:
         this.players[playerId].stamina += staminaRecovery;
-        specialResponse = `${staminaRecovery} stamina recovered (${this.getDuration(
+        specialResponse = `(${this.getDuration(
           staminaRecovery
-        )}s)`;
+        )}s) stamina recovered`;
         break;
       case PUNCH_TYPES.Cross:
         if (getCrit()) {
@@ -462,9 +463,9 @@ class Game {
     switch (position) {
       case GRAPPLE_TYPES.Trip:
         this.players[playerId].stamina += staminaRecovery;
-        specialResponse = `${staminaRecovery} stamina recovered (${this.getDuration(
+        specialResponse = `(${this.getDuration(
           staminaRecovery
-        )}s)`;
+        )}s) stamina recovered`;
         specialResponse += `\n${this.legDamagePlayer({
           targetId,
           damage: legDamage,
@@ -553,9 +554,9 @@ class Game {
     switch (position) {
       case GUARD_TYPES.Quick:
         this.players[playerId].stamina += staminaRecovery;
-        specialResponse = `${staminaRecovery} stamina recovered (${this.getDuration(
+        specialResponse = `(${this.getDuration(
           staminaRecovery
-        )}s)`;
+        )}s) stamina recovered`;
         break;
       case GUARD_TYPES.Recover:
         if (this.players[playerId].hp < MAX_HP)
