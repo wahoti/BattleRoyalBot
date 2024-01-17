@@ -12,7 +12,8 @@ COMMANDS
 - /game-end: ends the game
 - /game-status: see status of current game
 - /game-add-bot: adds a bot
-- /test-game: create and start a test game with the bot
+- /game-quick: creates and starts a game with 1 bot
+- /test-game: create and starts a game with 2 bots
 
 - /act-punch: basic attack, cost 10, 2 damage
 - - body (low): stamina damage

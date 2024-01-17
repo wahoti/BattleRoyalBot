@@ -9,7 +9,7 @@ module.exports = {
     .addStringOption((option) =>
       option
         .setName("speed")
-        .setDescription("speed")
+        .setDescription("game speed")
         .setRequired(true)
         .addChoices(
           { name: SPEED_TYPES.Fast, value: SPEED_TYPES.Fast },

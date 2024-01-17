@@ -18,11 +18,12 @@ module.exports = {
         )
     ),
   async execute(interaction) {
+    const level = interaction.options.getString("level");
     const { content: response, error } = global.engine.gameJoin({
       guildId: interaction.guildId,
       playerId: "1037462730812166155",
       name: "BattleRoyalBot",
-      bot: BOT_TYPES.Lv1,
+      bot: level,
     });
     await interaction.reply({ content: response, ephemeral: error });
   },

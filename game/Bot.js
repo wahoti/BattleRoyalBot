@@ -16,7 +16,7 @@ const getBotAction = ({ player, game }) => {
     return "";
   }
 
-  return `${response.response.content}\n-`;
+  return `\n-----------\n${response.response.content}`;
 };
 
 module.exports = {

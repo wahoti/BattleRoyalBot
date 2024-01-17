@@ -71,7 +71,7 @@ class Game {
   setIntervals() {
     this.gameInterval = setInterval(() => {
       this.gameStep();
-    }, SPEED_MAP[this.speed]);
+    }, this.getDurationMs(1));
   }
 
   clearIntervals() {
@@ -99,6 +99,14 @@ class Game {
         .filter((playerId) => this.players[playerId].hp > 0)
     )[0];
     return newTargetId ? newTargetId : playerId;
+  }
+
+  getDuration(duration) {
+    return (duration * SPEED_MAP[this.speed]) / 1000;
+  }
+
+  getDurationMs(duration) {
+    return duration * SPEED_MAP[this.speed];
   }
 
   getGameStatus() {
@@ -216,7 +224,9 @@ class Game {
 
     this.players[targetId].staminaDamage += _damage;
 
-    return `${this.players[targetId].name} took ${_damage} stamina damage${blocked}`;
+    return `${
+      this.players[targetId].name
+    } took ${_damage} stamina (${this.getDuration(_damage)}s) damage${blocked}`;
   }
 
   legDamagePlayer({ targetId, damage }) {
@@ -262,7 +272,10 @@ class Game {
       this.players[playerId].stamina - adjustedCost;
     this.players[playerId].staminaDamage = 0;
 
-    return `${this.players[playerId].name} used ${adjustedCost} stamina`;
+    let costResponse = `${this.players[playerId].name} used ${adjustedCost} stamina`;
+    costResponse += ` (${this.getDuration(adjustedCost)}s)`;
+
+    return costResponse;
   }
 
   getActionResponse(responses) {
@@ -314,12 +327,12 @@ class Game {
       const crit = getCrit();
       preventAction = `${this.players[targetId].name} countered the attack (${actionId} ${position} ${POSITION_MAP[position]})`;
       if (crit) preventAction += "\ncritical hit!\n";
-      preventAction += this.damagePlayer({
+      preventAction += `\n${this.damagePlayer({
         playerId: targetId,
         targetId: playerId,
         damage: COUNTER_DAMAGE,
         crit,
-      });
+      })}`;
     }
 
     if (preventAction) {
@@ -370,7 +383,9 @@ class Game {
     switch (position) {
       case PUNCH_TYPES.Jab:
         this.players[playerId].stamina += staminaRecovery;
-        specialResponse = `${staminaRecovery} stamina recovered`;
+        specialResponse = `${staminaRecovery} stamina recovered (${this.getDuration(
+          staminaRecovery
+        )}s)`;
         break;
       case PUNCH_TYPES.Cross:
         if (getCrit()) {
@@ -447,11 +462,13 @@ class Game {
     switch (position) {
       case GRAPPLE_TYPES.Trip:
         this.players[playerId].stamina += staminaRecovery;
-        specialResponse = `${staminaRecovery} stamina recovered\n`;
-        specialResponse += this.legDamagePlayer({
+        specialResponse = `${staminaRecovery} stamina recovered (${this.getDuration(
+          staminaRecovery
+        )}s)`;
+        specialResponse += `\n${this.legDamagePlayer({
           targetId,
           damage: legDamage,
-        });
+        })}`;
         break;
       case GRAPPLE_TYPES.Takedown:
         specialResponse = this.staminaDamagePlayer({
@@ -489,12 +506,12 @@ class Game {
 
     let actionResponse = "";
     actionResponse += this.players[playerId].name;
-    actionResponse += ` is evading attacks (${duration})`;
+    actionResponse += ` is evading attacks (${this.getDuration(duration)}s)`;
 
     this.players[playerId].dodge = position;
     setTimeout(() => {
       this.players[playerId].dodge = null;
-    }, duration * SPEED_MAP[this.speed]);
+    }, this.getDurationMs(duration));
 
     return {
       ephemeral: false,
@@ -511,12 +528,14 @@ class Game {
 
     let actionResponse = "";
     actionResponse += this.players[playerId].name;
-    actionResponse += ` is preparing to counter ${position} (${duration})`;
+    actionResponse += ` is preparing to counter ${position} (${this.getDuration(
+      duration
+    )}s)`;
 
     this.players[playerId].counter = position;
     setTimeout(() => {
       this.players[playerId].counter = null;
-    }, duration * SPEED_MAP[this.speed]);
+    }, this.getDurationMs(duration));
 
     return {
       ephemeral: true,
@@ -534,7 +553,9 @@ class Game {
     switch (position) {
       case GUARD_TYPES.Quick:
         this.players[playerId].stamina += staminaRecovery;
-        specialResponse = `${staminaRecovery} stamina recovered`;
+        specialResponse = `${staminaRecovery} stamina recovered (${this.getDuration(
+          staminaRecovery
+        )}s)`;
         break;
       case GUARD_TYPES.Recover:
         this.players[playerId].hp = Math.min(
@@ -560,11 +581,11 @@ class Game {
     this.players[playerId].guard = position;
     setTimeout(() => {
       this.players[playerId].guard = null;
-    }, duration * SPEED_MAP[this.speed]);
+    }, this.getDurationMs(duration));
 
     let actionResponse = "";
     actionResponse += this.players[playerId].name;
-    actionResponse += ` is guarding attacks (${duration})`;
+    actionResponse += ` is guarding attacks (${this.getDuration(duration)}s)`;
 
     return {
       ephemeral: false,
