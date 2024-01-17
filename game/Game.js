@@ -80,6 +80,7 @@ class Game {
       .filter((player) => player.preload)
       .forEach((player) => {
         const preloadActionResponse = player.preload();
+        this.players[player.id].preload = null;
         // TODO how to show only to user
         if (preloadActionResponse.response.ephemeral) return;
         preloadResponse += SYSTEM_TEXT;
