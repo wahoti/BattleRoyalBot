@@ -49,7 +49,7 @@ class Game {
       }
     });
 
-    this.doBotActions();
+    if (this.gameStatus === GAME_STATUS.STARTED) this.doBotActions();
 
     this.checkGameOver();
   }
