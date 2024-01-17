@@ -126,7 +126,7 @@ class Game {
 
     if (this.players[targetId].grapple >= GRAPPLE_LIMIT) {
       actionResponse += `\n${this.damagePlayer({
-        targetId: playerId,
+        targetId,
         damage: GRAPPLE_DAMAGE,
         playerId,
       })}`;

@@ -148,6 +148,13 @@ const ACTIONS = {
       healthRecovery: 2,
     },
   },
+  taunt: {
+    name: "Taunt",
+    cost: 5,
+    props: {
+      throwDamage: 1,
+    },
+  },
 };
 ```
 
