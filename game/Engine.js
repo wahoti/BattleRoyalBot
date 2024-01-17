@@ -81,7 +81,7 @@ class Engine {
     return this.games[guildId].getGameStatus();
   }
 
-  gameAction({ guildId, playerId, targetId, actionId, position }) {
+  gameAction({ guildId, playerId, targetId, actionId, position, useTarget }) {
     if (!this.games[guildId]) {
       return {
         response: {
@@ -114,13 +114,9 @@ class Engine {
         },
       };
     }
-    if (targetId && !this.games[guildId].players[targetId]) {
-      return {
-        response: {
-          content: "target not found",
-          ephemeral: true,
-        },
-      };
+    let _targetId = "";
+    if (useTarget && !this.games[guildId].players[targetId]) {
+      _targetId = this.games[guildId].getTarget({ playerId });
     }
     if (!this.games[guildId][actionId]) {
       return {
@@ -148,7 +144,7 @@ class Engine {
     }
     return this.games[guildId].doAction({
       playerId,
-      targetId,
+      targetId: _targetId,
       position,
       actionId,
     });

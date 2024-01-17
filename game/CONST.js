@@ -160,6 +160,7 @@ const getExecute = ({ actionId, useTarget = false }) => async (interaction) => {
     targetId: target?.id,
     actionId,
     position,
+    useTarget,
   });
   await interaction.reply(response);
   if (followUp) {

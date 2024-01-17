@@ -20,6 +20,26 @@ const {
   TAUNT_TYPES,
 } = require("./CONST");
 
+function shuffle(array) {
+  let currentIndex = array.length,
+    randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex > 0) {
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+
+  return array;
+}
+
 class Game {
   constructor({ guildId, speed }) {
     console.log("NEW GAME", guildId, speed);
@@ -68,6 +88,13 @@ class Game {
 
   gameJoin({ playerId, name }) {
     this.players[playerId] = new Player({ playerId, name });
+  }
+
+  getTarget({ playerId }) {
+    const newTargetId = shuffle(
+      Object.keys(this.players).filter((_playerId) => _playerId !== playerId)
+    )[0];
+    return newTargetId;
   }
 
   getGameStatus() {
@@ -541,7 +568,7 @@ class Game {
       case TAUNT_TYPES.Distract:
         Object.values(this.players)
           .filter((player) => player.id !== playerId)
-          .filter(() => Math.random() > 0.5)
+          // .filter(() => Math.random() > 0.5)
           .forEach((player, index) => {
             this.players[player.id].weak += enraged ? 2 : 1;
             specialResponse += `${index > 0 ? "\n" : ""}${
@@ -555,7 +582,7 @@ class Game {
       case TAUNT_TYPES.Throw:
         Object.values(this.players)
           .filter((player) => player.id !== playerId)
-          .filter(() => Math.random() > 0.5)
+          // .filter(() => Math.random() > 0.5)
           .forEach((player, index) => {
             const crit = getCrit();
             specialResponse += `${index > 0 ? "\n" : ""}${this.damagePlayer({

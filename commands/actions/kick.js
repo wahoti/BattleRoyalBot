@@ -21,7 +21,7 @@ module.exports = {
       option
         .setName("target")
         .setDescription("The player to target")
-        .setRequired(true)
+        .setRequired(false)
     ),
   execute: getExecute({ actionId: "kick", useTarget: true }),
 };
