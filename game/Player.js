@@ -11,6 +11,8 @@ class Player {
     this.id = playerId;
     this.bot = bot;
 
+    this.preload = null;
+
     // STATUS
     this.dodge = null;
     this.counter = null;

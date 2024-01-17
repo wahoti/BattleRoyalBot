@@ -1,5 +1,7 @@
 const { ACTIONS, shuffle } = require("./CONST");
 
+const SYSTEM_TEXT = "\n-----------\n";
+
 const getBotAction = ({ player, game }) => {
   const chosenActionId = shuffle(Object.keys(ACTIONS))[0];
   const position = shuffle(Object.keys(ACTIONS[chosenActionId].args))[0];
@@ -16,9 +18,10 @@ const getBotAction = ({ player, game }) => {
     return "";
   }
 
-  return `\n-----------\n${response.response.content}`;
+  return `${SYSTEM_TEXT}${response.response.content}`;
 };
 
 module.exports = {
   getBotAction,
+  SYSTEM_TEXT,
 };
