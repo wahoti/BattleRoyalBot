@@ -29,10 +29,10 @@ module.exports = {
         )
     ),
   async execute(interaction) {
+    const speed = interaction.options.getString("speed");
     const level = interaction.options.getString("level");
     const nickname = interaction.member.nickname;
     const name = interaction.user.username;
-    const speed = interaction.options.getString("speed");
 
     // CREATE GAME
     const { content: response1, error: error1 } = global.engine.gameCreate({

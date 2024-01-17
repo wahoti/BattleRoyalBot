@@ -5,66 +5,123 @@ const { SPEED_TYPES, BOT_TYPES } = require("../../game/CONST");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("test-game")
-    .setDescription("creates and starts a test game"),
+    .setDescription("creates and starts a test game")
+    .addStringOption((option) =>
+      option
+        .setName("level")
+        .setDescription("bot level")
+        .setRequired(false)
+        .addChoices(
+          { name: BOT_TYPES.Lv1, value: BOT_TYPES.Lv1 },
+          { name: BOT_TYPES.Lv2, value: BOT_TYPES.Lv2 },
+          { name: BOT_TYPES.Lv3, value: BOT_TYPES.Lv3 }
+        )
+    )
+    .addStringOption((option) =>
+      option
+        .setName("speed")
+        .setDescription("game speed")
+        .setRequired(false)
+        .addChoices(
+          { name: SPEED_TYPES.Fast, value: SPEED_TYPES.Fast },
+          { name: SPEED_TYPES.Medium, value: SPEED_TYPES.Medium },
+          { name: SPEED_TYPES.Slow, value: SPEED_TYPES.Slow }
+        )
+    )
+    .addBooleanOption((option) =>
+      option
+        .setName("player")
+        .setDescription("Whether or not the player joins the game")
+    ),
   async execute(interaction) {
+    const speed = interaction.options.getString("speed");
+    const level = interaction.options.getString("level");
+    const playerJoin = interaction.options.getBoolean("player");
+
     const nickname = interaction.member.nickname;
     const name = interaction.user.username;
-    const { content: response1, error: error1 } = global.engine.gameCreate({
+    const responses = [];
+
+    // CREATE GAME
+    const {
+      content: createResponse,
+      error: createError,
+    } = global.engine.gameCreate({
       guildId: interaction.guildId,
-      speed: SPEED_TYPES.Fast,
+      speed: speed ? speed : SPEED_TYPES.Fast,
       test: true,
       channelId: interaction.channelId,
     });
-    if (error1) {
-      await interaction.reply({ content: response1, ephemeral: true });
+
+    if (createError) {
+      await interaction.reply({ content: createResponse, ephemeral: true });
+    } else {
+      responses.push(createResponse);
     }
-    const { content: response2, error: error2 } = global.engine.gameJoin({
-      guildId: interaction.guildId,
-      playerId: interaction.user.id,
-      name: nickname || name,
-    });
-    if (error2) {
-      await interaction.reply({ content: response2, ephemeral: true });
+
+    // PLAYER JOIN GAME
+    if (playerJoin) {
+      const {
+        content: playerResponse,
+        error: playerError,
+      } = global.engine.gameJoin({
+        guildId: interaction.guildId,
+        playerId: interaction.user.id,
+        name: nickname || name,
+      });
+
+      if (playerError) {
+        await interaction.reply({ content: playerResponse, ephemeral: true });
+      } else {
+        responses.push(playerResponse);
+      }
     }
-    const { content: response3, error: error3 } = global.engine.gameJoin({
+
+    // BOT JOIN GAME
+    const { content: botResponse1, error: botError1 } = global.engine.gameJoin({
       guildId: interaction.guildId,
       playerId: "1037462730812166155",
       name: "BattleRoyalBot",
-      bot: BOT_TYPES.Lv1,
-      // bot: BOT_TYPES.AFK,
+      bot: level ? level : BOT_TYPES.Lv3,
     });
-    if (error3) {
-      await interaction.reply({ content: response3, ephemeral: true });
+
+    if (botError1) {
+      await interaction.reply({ content: botResponse1, ephemeral: true });
+    } else {
+      responses.push(botResponse1);
     }
-    const { content: response5, error: error5 } = global.engine.gameJoin({
+
+    const { content: botResponse2, error: botError2 } = global.engine.gameJoin({
       guildId: interaction.guildId,
       playerId: "poopoo",
       name: "Cool Guy",
-      bot: BOT_TYPES.Lv2,
+      bot: BOT_TYPES.Lv3,
       // bot: BOT_TYPES.AFK,
     });
-    if (error5) {
-      await interaction.reply({ content: response5, ephemeral: true });
+
+    if (botError2) {
+      await interaction.reply({ content: botResponse2, ephemeral: true });
+    } else {
+      responses.push(botResponse2);
     }
-    const { content: response4, error: error4 } = global.engine.gameStart(
-      interaction.guildId
-    );
-    if (error4) {
+
+    // START GAME
+    const {
+      content: startResponse,
+      error: startError,
+    } = global.engine.gameStart(interaction.guildId);
+
+    if (startError) {
       await interaction.reply({ content: response3, ephemeral: true });
+    } else {
+      responses.push(startResponse);
     }
-    const response = `${response1}\n${response2}\n${response3}\n${response5}\n${response4}`;
+
+    let response = "";
+    responses.forEach((actionResponse, index) => {
+      response += `${index > 0 ? "\n" : ""}${actionResponse}`;
+    });
+
     await interaction.reply({ content: response, ephemeral: true });
-    // console.log("channel id", interaction.channelId);
-    // global.engine.client.channels.cache
-    //   .get(interaction.channelId)
-    //   .send("poopoo");
-    // EXPERIMENT:
-    // follow ups kept sending as far as a couple minutes before it stopped
-    // there is still possibly a time limit though
-    // best solution is using client instead
-    // let count = 0;
-    // setInterval(async () => {
-    //   await interaction.followUp(`follow ${(count += 1)}`);
-    // }, 1000);
   },
 };

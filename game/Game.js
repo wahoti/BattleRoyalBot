@@ -327,7 +327,7 @@ class Game {
     ) {
       const crit = getCrit();
       preventAction = `${this.players[targetId].name} countered the attack (${actionId} ${position})`;
-      if (crit) preventAction += "\ncritical hit!\n";
+      if (crit) preventAction += "\ncritical hit!";
       preventAction += `\n${this.damagePlayer({
         playerId: targetId,
         targetId: playerId,
