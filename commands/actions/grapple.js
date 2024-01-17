@@ -4,7 +4,7 @@ const { GRAPPLE_TYPES, getExecute, ACTIONS } = require("../../game/CONST");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("attack-grapple")
+    .setName("act-grapple")
     .setDescription(`perform a grapple attack, cost ${ACTIONS.grapple.cost}`)
     .addStringOption((option) =>
       option

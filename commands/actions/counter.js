@@ -4,7 +4,7 @@ const { DODGE_TYPES, getExecute, ACTIONS } = require("../../game/CONST");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("defend-counter")
+    .setName("act-counter")
     .setDescription(`counter an attack, cost ${ACTIONS.counter.cost}`)
     .addStringOption((option) =>
       option
