@@ -92,9 +92,11 @@ class Game {
 
   getTarget({ playerId }) {
     const newTargetId = shuffle(
-      Object.keys(this.players).filter((_playerId) => _playerId !== playerId)
+      Object.keys(this.players)
+        .filter((_playerId) => _playerId !== playerId)
+        .filter((playerId) => this.players[playerId].hp > 0)
     )[0];
-    return newTargetId;
+    return newTargetId ? newTargetId : playerId;
   }
 
   getGameStatus() {
