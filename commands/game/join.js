@@ -11,6 +11,7 @@ module.exports = {
       guildId: interaction.guildId,
       playerId: interaction.user.id,
       name: nickname || name,
+      bot: false,
     });
     await interaction.reply({ content: response, ephemeral: error });
   },

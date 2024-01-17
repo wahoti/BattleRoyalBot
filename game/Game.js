@@ -1,4 +1,5 @@
 const Player = require("./Player");
+const { getBotAction } = require("./Bot");
 const {
   GAME_STATUS,
   MAX_STAMINA,
@@ -18,6 +19,7 @@ const {
   SPEED_MAP,
   getCrit,
   TAUNT_TYPES,
+  BOT_TYPES,
 } = require("./CONST");
 
 function shuffle(array) {
@@ -41,11 +43,13 @@ function shuffle(array) {
 }
 
 class Game {
-  constructor({ guildId, speed }) {
+  constructor({ guildId, speed, test, channelId }) {
     console.log("NEW GAME", guildId, speed);
 
     this.guildId = guildId;
     this.speed = speed;
+    this.test = test;
+    this.channelId = channelId;
 
     this.players = {};
     this.agents = {};
@@ -63,7 +67,24 @@ class Game {
       }
     });
 
+    this.doBotActions();
+
     this.checkGameOver();
+  }
+
+  doBotActions() {
+    let botResponse = "";
+    Object.values(this.players)
+      .filter((player) => player.bot && player.bot !== BOT_TYPES.AFK)
+      .filter((player) => {
+        return player.stamina > 0;
+      })
+      .forEach((player) => {
+        botResponse += getBotAction({ player, game: this });
+      });
+    if (this.channelId && botResponse) {
+      global.engine.client.channels.cache.get(this.channelId).send(botResponse);
+    }
   }
 
   setIntervals() {
@@ -86,8 +107,8 @@ class Game {
     this.gameStatus = GAME_STATUS.ENDED;
   }
 
-  gameJoin({ playerId, name }) {
-    this.players[playerId] = new Player({ playerId, name });
+  gameJoin({ playerId, ...playerProps }) {
+    this.players[playerId] = new Player({ playerId, ...playerProps });
   }
 
   getTarget({ playerId }) {
@@ -267,9 +288,21 @@ class Game {
     return content;
   }
 
-  doAction({ playerId, targetId, position, actionId }) {
+  doAction({
+    playerId,
+    targetId: maybeTargetId,
+    position,
+    actionId,
+    useTarget,
+  }) {
+    // get a random target if we don't have one
+    let targetId = useTarget ? maybeTargetId : "";
+    if (useTarget && !this.players[maybeTargetId]) {
+      targetId = this.getTarget({ playerId });
+    }
+
     const { cost, damage, name, props } = ACTIONS[actionId];
-    console.log("actionData", { actionId, cost, damage, props });
+    // console.log("actionData", { actionId, cost, damage, props });
 
     const followUp = { content: "stamina recovered", ephemeral: true };
 

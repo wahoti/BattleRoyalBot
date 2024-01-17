@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require("discord.js");
 
-const { SPEED_TYPES } = require("../../game/CONST");
+const { SPEED_TYPES, BOT_TYPES } = require("../../game/CONST");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -12,6 +12,8 @@ module.exports = {
     const { content: response1, error: error1 } = global.engine.gameCreate({
       guildId: interaction.guildId,
       speed: SPEED_TYPES.Fast,
+      test: true,
+      channelId: interaction.channelId,
     });
     if (error1) {
       await interaction.reply({ content: response1, ephemeral: true });
@@ -28,6 +30,7 @@ module.exports = {
       guildId: interaction.guildId,
       playerId: "1037462730812166155",
       name: "BattleRoyalBot",
+      bot: BOT_TYPES.Lv1,
     });
     if (error3) {
       await interaction.reply({ content: response3, ephemeral: true });
@@ -36,6 +39,7 @@ module.exports = {
       guildId: interaction.guildId,
       playerId: "poopoo",
       name: "BattleRoyalBot2",
+      bot: BOT_TYPES.AFK,
     });
     if (error5) {
       await interaction.reply({ content: response5, ephemeral: true });
@@ -48,5 +52,17 @@ module.exports = {
     }
     const response = `${response1}\n${response2}\n${response3}\n${response5}\n${response4}`;
     await interaction.reply({ content: response, ephemeral: true });
+    // console.log("channel id", interaction.channelId);
+    // global.engine.client.channels.cache
+    //   .get(interaction.channelId)
+    //   .send("poopoo");
+    // EXPERIMENT:
+    // follow ups kept sending as far as a couple minutes before it stopped
+    // there is still possibly a time limit though
+    // best solution is using client instead
+    // let count = 0;
+    // setInterval(async () => {
+    //   await interaction.followUp(`follow ${(count += 1)}`);
+    // }, 1000);
   },
 };

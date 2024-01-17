@@ -24,6 +24,8 @@ module.exports = {
     const { content: response1, error: error1 } = global.engine.gameCreate({
       guildId: interaction.guildId,
       speed,
+      test: true,
+      channelId: interaction.channelId,
     });
     if (error1) {
       await interaction.reply({ content: response1, ephemeral: true });
@@ -32,6 +34,7 @@ module.exports = {
       guildId: interaction.guildId,
       playerId: interaction.user.id,
       name: nickname || name,
+      bot: false,
     });
     if (error2) {
       await interaction.reply({ content: response2, ephemeral: true });

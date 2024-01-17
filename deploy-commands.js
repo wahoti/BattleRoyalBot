@@ -39,10 +39,10 @@ const rest = new REST().setToken(token);
 
 // RESET_COMMANDS
 // for global commands
-rest
-  .put(Routes.applicationCommands(clientId), { body: [] })
-  .then(() => console.log("Successfully deleted all application commands."))
-  .catch(console.error);
+// rest
+//   .put(Routes.applicationCommands(clientId), { body: [] })
+//   .then(() => console.log("Successfully deleted all application commands."))
+//   .catch(console.error);
 
 // and deploy your commands!
 (async () => {

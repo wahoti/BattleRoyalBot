@@ -1,7 +1,7 @@
 const { MAX_HP, MAX_STAMINA } = require("./CONST");
 
 class Player {
-  constructor({ playerId, name }) {
+  constructor({ playerId, name, bot }) {
     console.log("NEW PLAYER", playerId);
     this.hp = MAX_HP;
     this.stamina = MAX_STAMINA;
@@ -9,6 +9,7 @@ class Player {
     this.legDamage = 0;
     this.name = name;
     this.id = playerId;
+    this.bot = bot;
 
     // STATUS
     this.dodge = null;

@@ -22,6 +22,7 @@ const ACTIONS = {
       staminaDamage: 5,
       dodgeable: true,
       counterable: true,
+      useTarget: true,
     },
   },
   kick: {
@@ -33,6 +34,7 @@ const ACTIONS = {
       legDamage: 4,
       dodgeable: true,
       counterable: true,
+      useTarget: true,
     },
   },
   grapple: {
@@ -46,6 +48,7 @@ const ACTIONS = {
       legDamage: 1,
       dodgeable: true,
       counterable: true,
+      useTarget: true,
     },
   },
   dodge: {
@@ -175,6 +178,13 @@ const getExecute = ({ actionId, useTarget = false }) => async (interaction) => {
 
 const getCrit = () => Math.random() > 0.77;
 
+const BOT_TYPES = {
+  Lv1: "Lv1",
+  Lv2: "Lv2",
+  Lv3: "Lv3",
+  AFK: "AFK",
+};
+
 module.exports = {
   GAME_STATUS,
   MAX_HP,
@@ -197,4 +207,5 @@ module.exports = {
   SPEED_TYPES,
   SPEED_MAP,
   TAUNT_TYPES,
+  BOT_TYPES,
 };

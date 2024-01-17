@@ -11,6 +11,7 @@ COMMANDS
 - /game-start: starts the game
 - /game-end: ends the game
 - /game-status: see status of current game
+- /game-add-bot: adds a bot
 - /test-game: create and start a test game with the bot
 
 - /act-punch: basic attack, cost 10, 2 damage
@@ -191,3 +192,8 @@ depends on config.json
   "clientId": "your client id",
 }
 ```
+
+TODOS / THOUGHTS
+
+- add actual bot AI, random moves at least
+- maybe get bot to send command instead of a regular message

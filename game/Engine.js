@@ -7,13 +7,16 @@ class Engine {
 
     // 1 game per server
     this.games = {};
+
+    // set on login
+    this.client = null;
   }
 
-  gameCreate({ guildId, speed }) {
+  gameCreate({ guildId, speed, channelId, test }) {
     if (this.games[guildId]) {
       this.games[guildId].gameEnd();
     }
-    this.games[guildId] = new Game({ guildId, speed });
+    this.games[guildId] = new Game({ guildId, speed, channelId, test });
     return {
       error: false,
       content: `game created ${speed}`,
@@ -52,7 +55,7 @@ class Engine {
     return "game ended";
   }
 
-  gameJoin({ guildId, playerId, name }) {
+  gameJoin({ guildId, playerId, name, bot }) {
     if (!this.games[guildId])
       return {
         error: true,
@@ -64,7 +67,7 @@ class Engine {
         content: `game not joinable, ${this.games[guildId].gameStatus}`,
       };
     }
-    this.games[guildId].gameJoin({ playerId, name });
+    this.games[guildId].gameJoin({ playerId, name, bot });
     return {
       error: false,
       content: `game joined, ${
@@ -114,10 +117,6 @@ class Engine {
         },
       };
     }
-    let _targetId = useTarget ? targetId : "";
-    if (useTarget && !this.games[guildId].players[targetId]) {
-      _targetId = this.games[guildId].getTarget({ playerId });
-    }
     if (!this.games[guildId][actionId]) {
       return {
         response: {
@@ -144,7 +143,8 @@ class Engine {
     }
     return this.games[guildId].doAction({
       playerId,
-      targetId: _targetId,
+      targetId,
+      useTarget,
       position,
       actionId,
     });
