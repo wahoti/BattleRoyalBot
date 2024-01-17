@@ -192,8 +192,3 @@ depends on config.json
   "clientId": "your client id",
 }
 ```
-
-TODOS / THOUGHTS
-
-- add actual bot AI, random moves at least
-- maybe get bot to send command instead of a regular message

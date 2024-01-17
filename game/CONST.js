@@ -149,7 +149,7 @@ const POSITION_MAP = {
 
   [PUNCH_TYPES.Body]: DODGE_TYPES.Low,
   [PUNCH_TYPES.Jab]: DODGE_TYPES.Mid,
-  [PUNCH_TYPES.High]: DODGE_TYPES.High,
+  [PUNCH_TYPES.Cross]: DODGE_TYPES.Cross,
 };
 
 // low hit by mid
