@@ -12,77 +12,6 @@ const COUNTER_DAMAGE = 5;
 const GRAPPLE_DAMAGE = 10;
 const GRAPPLE_LIMIT = 3;
 
-const ACTIONS = {
-  punch: {
-    name: "Punch",
-    cost: 10,
-    damage: 2,
-    props: {
-      staminaRecovery: 5,
-      staminaDamage: 5,
-      dodgeable: true,
-      counterable: true,
-      useTarget: true,
-    },
-  },
-  kick: {
-    name: "Kick",
-    cost: 20,
-    damage: 4,
-    props: {
-      staminaDamage: 10,
-      legDamage: 4,
-      dodgeable: true,
-      counterable: true,
-      useTarget: true,
-    },
-  },
-  grapple: {
-    name: "Grapple",
-    cost: 15,
-    damage: 0,
-    props: {
-      staminaDamage: 10,
-      staminaRecovery: 5,
-      throwDamage: 3,
-      legDamage: 1,
-      dodgeable: true,
-      counterable: true,
-      useTarget: true,
-    },
-  },
-  dodge: {
-    name: "Dodge",
-    cost: 10,
-    props: {
-      duration: 15,
-    },
-  },
-  counter: {
-    name: "Counter",
-    cost: 5,
-    props: {
-      duration: 15,
-    },
-  },
-  guard: {
-    name: "Guard",
-    cost: 8,
-    props: {
-      duration: 15,
-      staminaRecovery: 4,
-      healthRecovery: 2,
-    },
-  },
-  taunt: {
-    name: "Taunt",
-    cost: 5,
-    props: {
-      throwDamage: 1,
-    },
-  },
-};
-
 const PUNCH_TYPES = {
   Jab: "Jab", // Mid
   Cross: "Cross", // High
@@ -123,6 +52,84 @@ const TAUNT_TYPES = {
   Distract: "Distract",
   Rage: "Rage",
   Throw: "Throw",
+};
+
+const ACTIONS = {
+  punch: {
+    name: "Punch",
+    cost: 10,
+    damage: 2,
+    props: {
+      staminaRecovery: 5,
+      staminaDamage: 5,
+      dodgeable: true,
+      counterable: true,
+      useTarget: true,
+    },
+    args: PUNCH_TYPES,
+  },
+  kick: {
+    name: "Kick",
+    cost: 20,
+    damage: 4,
+    props: {
+      staminaDamage: 10,
+      legDamage: 4,
+      dodgeable: true,
+      counterable: true,
+      useTarget: true,
+    },
+    args: KICK_TYPES,
+  },
+  grapple: {
+    name: "Grapple",
+    cost: 15,
+    damage: 0,
+    props: {
+      staminaDamage: 10,
+      staminaRecovery: 5,
+      throwDamage: 3,
+      legDamage: 1,
+      dodgeable: true,
+      counterable: true,
+      useTarget: true,
+    },
+    args: GRAPPLE_TYPES,
+  },
+  dodge: {
+    name: "Dodge",
+    cost: 10,
+    props: {
+      duration: 15,
+    },
+    args: DODGE_TYPES,
+  },
+  counter: {
+    name: "Counter",
+    cost: 5,
+    props: {
+      duration: 15,
+    },
+    args: DODGE_TYPES,
+  },
+  guard: {
+    name: "Guard",
+    cost: 8,
+    props: {
+      duration: 15,
+      staminaRecovery: 4,
+      healthRecovery: 2,
+    },
+    args: GUARD_TYPES,
+  },
+  taunt: {
+    name: "Taunt",
+    cost: 5,
+    props: {
+      throwDamage: 1,
+    },
+    args: TAUNT_TYPES,
+  },
 };
 
 const SPEED_MAP = {

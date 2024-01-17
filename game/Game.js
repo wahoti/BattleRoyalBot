@@ -76,9 +76,8 @@ class Game {
     let botResponse = "";
     Object.values(this.players)
       .filter((player) => player.bot && player.bot !== BOT_TYPES.AFK)
-      .filter((player) => {
-        return player.stamina > 0;
-      })
+      .filter((player) => player.stamina > 0)
+      .filter((player) => player.hp > 0)
       .forEach((player) => {
         botResponse += getBotAction({ player, game: this });
       });
