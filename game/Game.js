@@ -20,27 +20,9 @@ const {
   getCrit,
   TAUNT_TYPES,
   BOT_TYPES,
+  shuffle,
+  BOT_HANDICAPS,
 } = require("./CONST");
-
-function shuffle(array) {
-  let currentIndex = array.length,
-    randomIndex;
-
-  // While there remain elements to shuffle.
-  while (currentIndex > 0) {
-    // Pick a remaining element.
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex],
-      array[currentIndex],
-    ];
-  }
-
-  return array;
-}
 
 class Game {
   constructor({ guildId, speed, test, channelId }) {
@@ -272,6 +254,10 @@ class Game {
       adjustedCost += this.players[playerId].grapple * 2;
     }
 
+    if (this.players[playerId].bot) {
+      adjustedCost += BOT_HANDICAPS[this.players[playerId].bot];
+    }
+
     this.players[playerId].stamina =
       this.players[playerId].stamina - adjustedCost;
     this.players[playerId].staminaDamage = 0;
@@ -327,7 +313,7 @@ class Game {
     ) {
       const crit = getCrit();
       preventAction = `${this.players[targetId].name} countered the attack (${actionId} ${position} ${POSITION_MAP[position]})`;
-      if (crit) preventAction += "critical hit!\n";
+      if (crit) preventAction += "\ncritical hit!\n";
       preventAction += this.damagePlayer({
         playerId: targetId,
         targetId: playerId,

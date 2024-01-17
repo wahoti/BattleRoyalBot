@@ -1,8 +1,8 @@
-const { ACTIONS, PUNCH_TYPES } = require("./CONST");
+const { ACTIONS, shuffle } = require("./CONST");
 
 const getBotAction = ({ player, game }) => {
-  const chosenActionId = "punch";
-  const position = PUNCH_TYPES.Jab;
+  const chosenActionId = shuffle(Object.keys(ACTIONS))[0];
+  const position = shuffle(Object.keys(ACTIONS[chosenActionId].args))[0];
 
   const response = game.doAction({
     playerId: player.id,
@@ -12,7 +12,11 @@ const getBotAction = ({ player, game }) => {
     actionId: chosenActionId,
   });
 
-  return response.response.content;
+  if (response.response.ephemeral) {
+    return "";
+  }
+
+  return `${response.response.content}\n-`;
 };
 
 module.exports = {

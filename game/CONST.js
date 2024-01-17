@@ -192,6 +192,33 @@ const BOT_TYPES = {
   AFK: "AFK",
 };
 
+const BOT_HANDICAPS = {
+  [BOT_TYPES.Lv1]: 10,
+  [BOT_TYPES.Lv2]: 5,
+  [BOT_TYPES.Lv3]: 0,
+  [BOT_TYPES.AFK]: 0,
+};
+
+function shuffle(array) {
+  let currentIndex = array.length,
+    randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex > 0) {
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+
+  return array;
+}
+
 module.exports = {
   GAME_STATUS,
   MAX_HP,
@@ -215,4 +242,6 @@ module.exports = {
   SPEED_MAP,
   TAUNT_TYPES,
   BOT_TYPES,
+  shuffle,
+  BOT_HANDICAPS,
 };

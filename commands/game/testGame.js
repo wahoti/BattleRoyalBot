@@ -38,8 +38,8 @@ module.exports = {
     const { content: response5, error: error5 } = global.engine.gameJoin({
       guildId: interaction.guildId,
       playerId: "poopoo",
-      name: "BattleRoyalBot2",
-      bot: BOT_TYPES.AFK,
+      name: "Cool Guy",
+      bot: BOT_TYPES.Lv2,
     });
     if (error5) {
       await interaction.reply({ content: response5, ephemeral: true });
