@@ -114,7 +114,7 @@ class Engine {
         },
       };
     }
-    let _targetId = "";
+    let _targetId = useTarget ? targetId : "";
     if (useTarget && !this.games[guildId].players[targetId]) {
       _targetId = this.games[guildId].getTarget({ playerId });
     }
