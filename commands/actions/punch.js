@@ -4,7 +4,7 @@ const { PUNCH_TYPES, getExecute, ACTIONS } = require("../../game/CONST");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("act--punch")
+    .setName("act-punch")
     .setDescription(`perform a punch attack, cost ${ACTIONS.punch.cost}`)
     .addStringOption((option) =>
       option

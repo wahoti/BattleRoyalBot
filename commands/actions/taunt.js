@@ -4,7 +4,7 @@ const { TAUNT_TYPES, getExecute, ACTIONS } = require("../../game/CONST");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("act--taunt")
+    .setName("act-taunt")
     .setDescription(`perform utility effects, cost ${ACTIONS.taunt.cost}`)
     .addStringOption((option) =>
       option
