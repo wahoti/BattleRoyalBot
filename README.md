@@ -13,35 +13,35 @@ COMMANDS
 - /game-status: see status of current game
 - /test-game: create and start a test game with the bot
 
-- /attack-punch: basic attack, cost 10, 2 damage
+- /act-punch: basic attack, cost 10, 2 damage
 - - body (low): stamina damage
 - - jab (mid): refund stamina (shorter cooldown)
 - - cross (high): critical hit chance 23% for double damage
 
-- /attack-kick: basic attack, cost 20, 4 damage
+- /act-kick: basic attack, cost 20, 4 damage
 - - leg (low): leg damage
 - - body (mid): stamina damage
 - - high (high): critical hit chance 23% for double damage
 
-- /attack-grapple: basic attack, cost 15, inflicts grapple status
+- /act-grapple: basic attack, cost 15, inflicts grapple status
 - - trip (low): refund stamina (shorter cooldown)
 - - takedown (mid): stamina damage
 - - throw (high): health damage
 
-- /defend-dodge: dodge 2/3 incoming attack positions
+- /act-dodge: dodge 2/3 incoming attack positions
 - - low is hit by mid
 - - mid is hit by high
 - - high is hit by low
 
-- /defend-counter: pick 1 of 3 positions to counter
+- /act-counter: pick 1 of 3 positions to counter
 - - evade and retaliate against an attack of chosen position
 
-- /defend-guard: reduce incoming damage
+- /act-guard: reduce incoming damage
 - - quick: refund stamina (shorter cooldown)
 - - recover: recover health
 - - grapple: reduce your grapple level by one, defend against incoming grapples
 
-- /utility-taunt: utility effects, double effectiveness when half health
+- /act-taunt: utility effects, double effectiveness when half health
 - - distract: apply weak to all opponents 50% chance
 - - rage: apply rage to self
 - - throw: 1 damage to all opponents 50% chance, can crit
