@@ -17,6 +17,7 @@ const {
   GRAPPLE_LIMIT,
   SPEED_MAP,
   getCrit,
+  TAUNT_TYPES,
 } = require("./CONST");
 
 class Game {
@@ -80,6 +81,8 @@ class Game {
         statusString += `\tstaminaDamage: ${player.staminaDamage}`;
       if (player.legDamage) statusString += `\tlegDamage: ${player.legDamage}`;
       if (player.grapple) statusString += `\tgrapple level: ${player.grapple}`;
+      if (player.rage) statusString += `\trage: ${player.rage}`;
+      if (player.weak) statusString += `\tweak: ${player.weak}`;
       return statusString;
     }, "");
     response += playersString;
@@ -136,7 +139,19 @@ class Game {
     let _damage = damage;
     let blocked = "";
 
-    if (crit) _damage = _damage * 2;
+    if (this.players[playerId].rage) {
+      blocked = ` (rage ${this.players[playerId].rage})`;
+      _damage = _damage + this.players[playerId].rage;
+      this.players[playerId].rage = 0;
+    }
+    if (this.players[playerId].weak) {
+      blocked = ` (weak ${this.players[playerId].weak})`;
+      _damage = _damage - this.players[playerId].weak;
+      this.players[playerId].weak = 0;
+    }
+    if (crit) {
+      _damage = _damage * 2;
+    }
     if (this.players[targetId].guard) {
       blocked = " (blocked)";
       _damage = _damage / 2;
@@ -432,7 +447,7 @@ class Game {
     this.players[playerId].dodge = position;
     setTimeout(() => {
       this.players[playerId].dodge = null;
-    }, duration * 1000);
+    }, duration * SPEED_MAP[this.speed]);
 
     return {
       ephemeral: false,
@@ -454,7 +469,7 @@ class Game {
     this.players[playerId].counter = position;
     setTimeout(() => {
       this.players[playerId].counter = null;
-    }, duration * 1000);
+    }, duration * SPEED_MAP[this.speed]);
 
     return {
       ephemeral: true,
@@ -498,11 +513,61 @@ class Game {
     this.players[playerId].guard = position;
     setTimeout(() => {
       this.players[playerId].guard = null;
-    }, duration * 1000);
+    }, duration * SPEED_MAP[this.speed]);
 
     let actionResponse = "";
     actionResponse += this.players[playerId].name;
     actionResponse += ` is guarding attacks (${duration})`;
+
+    return {
+      ephemeral: false,
+      actionResponse,
+      specialResponse,
+      crit: false,
+    };
+  }
+
+  taunt({ playerId, props, position }) {
+    const enraged = this.players[playerId].hp <= 5;
+
+    const actionResponse = `${
+      this.players[playerId].name
+    } used taunt (${position})${enraged ? " (enraged)" : ""}`;
+    let specialResponse = "";
+
+    const { throwDamage } = props;
+
+    switch (position) {
+      case TAUNT_TYPES.Distract:
+        Object.values(this.players)
+          .filter((player) => player.id !== playerId)
+          .filter(() => Math.random() > 0.5)
+          .forEach((player, index) => {
+            this.players[player.id].weak += enraged ? 2 : 1;
+            specialResponse += `${index > 0 ? "\n" : ""}${
+              this.players[player.id].name
+            } was weakened`;
+          });
+        break;
+      case TAUNT_TYPES.Rage:
+        this.players[playerId].rage += enraged ? 2 : 1;
+        break;
+      case TAUNT_TYPES.Throw:
+        Object.values(this.players)
+          .filter((player) => player.id !== playerId)
+          .filter(() => Math.random() > 0.5)
+          .forEach((player, index) => {
+            const crit = getCrit();
+            specialResponse += `${index > 0 ? "\n" : ""}${this.damagePlayer({
+              targetId: player.id,
+              damage: enraged ? throwDamage * 2 : throwDamage,
+              crit,
+              playerId,
+            })}`;
+          });
+        break;
+      default:
+    }
 
     return {
       ephemeral: false,

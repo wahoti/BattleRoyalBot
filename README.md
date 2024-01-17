@@ -41,6 +41,11 @@ COMMANDS
 - - recover: recover health
 - - grapple: reduce your grapple level by one, defend against incoming grapples
 
+- /utility-taunt: utility effects, double effectiveness when half health
+- - distract: apply weak to all opponents 50% chance
+- - rage: apply rage to self
+- - throw: 1 damage to all opponents 50% chance, can crit
+
 MECHANICS
 
 stamina damage: causes extra stamina usage on the player's next action then is reset to 0.
@@ -62,12 +67,16 @@ critical hits: attacks that can crit have a 23% chance for double damage.
 - - cross punch
 - - head kick
 - - counters
+- - taunt throw
 
 game speed:
 
 - Fast game speed: stamina regenerates at 1 point per second
 - Medium game speed: stamina regenerates at 1 point per 2 seconds
 - Slow game speed: stamina regenerates at 1 point per 3 seconds
+
+rage: increases next instance of damage by rage level then is reset to 0
+weak: decreases next instance of damage by weak level then is reset to 0
 
 ACTION DETAILS
 
@@ -158,7 +167,7 @@ hosting (DigitalOcean)
 to add a new command
 
 - add the command file in /commands/actions/newAction.js
-- register the command in /game/CONST.js
+- register the command in ACTIONS in /game/CONST.js
 - add options in /game/CONST.js
 - add a handler to /game/Game.js
 

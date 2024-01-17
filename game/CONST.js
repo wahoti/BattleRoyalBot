@@ -71,6 +71,13 @@ const ACTIONS = {
       healthRecovery: 2,
     },
   },
+  taunt: {
+    name: "Taunt",
+    cost: 5,
+    props: {
+      throwDamage: 1,
+    },
+  },
 };
 
 const PUNCH_TYPES = {
@@ -107,6 +114,12 @@ const SPEED_TYPES = {
   Slow: "Slow",
   Medium: "Medium",
   Fast: "Fast",
+};
+
+const TAUNT_TYPES = {
+  Distract: "Distract",
+  Rage: "Rage",
+  Throw: "Throw",
 };
 
 const SPEED_MAP = {
@@ -182,4 +195,5 @@ module.exports = {
   GRAPPLE_LIMIT,
   SPEED_TYPES,
   SPEED_MAP,
+  TAUNT_TYPES,
 };

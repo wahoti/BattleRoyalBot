@@ -15,6 +15,8 @@ class Player {
     this.counter = null;
     this.guard = null;
     this.grapple = 0;
+    this.rage = 0;
+    this.weak = 0;
   }
 }
 
