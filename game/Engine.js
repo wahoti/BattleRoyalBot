@@ -16,7 +16,7 @@ class Engine {
     this.games[guildId] = new Game({ guildId, speed });
     return {
       error: false,
-      content: "game created",
+      content: `game created ${speed}`,
     };
   }
 
