@@ -1,4 +1,4 @@
-const { MAX_HP, MAX_STAMINA, PLAYER_STATUS } = require("./CONST");
+const { MAX_HP, MAX_STAMINA } = require("./CONST");
 
 class Player {
   constructor({ playerId, name }) {
@@ -9,10 +9,8 @@ class Player {
     this.legDamage = 0;
     this.name = name;
     this.id = playerId;
-    this.status = PLAYER_STATUS.ACTIVE;
 
     // STATUS
-    this.statusEffects = {};
     this.dodge = null;
     this.counter = null;
     this.guard = null;

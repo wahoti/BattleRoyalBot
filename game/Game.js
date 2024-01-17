@@ -2,13 +2,11 @@ const Player = require("./Player");
 const {
   GAME_STATUS,
   MAX_STAMINA,
-  PLAYER_STATUS,
   PUNCH_TYPES,
   KICK_TYPES,
   ACTIONS,
   LEG_DAMAGE_THRESHOLD,
   LEG_DAMAGE_THRESHOLD_MAX,
-  STATUS_EFFECTS,
   DODGE_MAP,
   POSITION_MAP,
   COUNTER_DAMAGE,
@@ -72,21 +70,16 @@ class Game {
   }
 
   getGameStatus() {
-    let response = `game status: ${this.gameStatus}\n`;
-    response += `players: ${Object.keys(this.players).length}`;
+    let response = ``;
     const playersString = Object.values(this.players).reduce((acc, player) => {
-      let statusString = `${acc}\n${player.name}: ${player.status}`;
-      // if (player.status !== PLAYER_STATUS.ACTIVE) return statusString;
-      statusString += `\n\thp ${player.hp},  `;
+      let statusString = `${acc}\n\n${player.name}:`;
+      statusString += `\thp ${player.hp},  `;
       if (player.hp < 0) return statusString;
-      statusString += `\n\tstamina: ${player.stamina}, `;
-      statusString += `\n\tstaminaDamage: ${player.staminaDamage}`;
-      statusString += `\n\tgrapple level: ${player.grapple}`;
-      Object.keys(player.statusEffects).forEach((statusEffect) => {
-        if (player.statusEffects[statusEffect]) {
-          statusString += `\n\t${statusEffect}`;
-        }
-      });
+      statusString += `\tstamina: ${player.stamina}, `;
+      if (player.staminaDamage)
+        statusString += `\tstaminaDamage: ${player.staminaDamage}`;
+      if (player.legDamage) statusString += `\tlegDamage: ${player.legDamage}`;
+      if (player.grapple) statusString += `\tgrapple level: ${player.grapple}`;
       return statusString;
     }, "");
     response += playersString;
@@ -98,7 +91,6 @@ class Game {
     let activePlayer = "no one";
 
     Object.values(this.players).forEach((player) => {
-      // if (player.status === PLAYER_STATUS.ACTIVE)
       if (player.hp > 0) {
         activePlayers += 1;
         activePlayer = player.name;
@@ -160,7 +152,6 @@ class Game {
     const damageString = `${this.players[targetId].name} took ${_damage} damage${blocked}`;
 
     if (this.players[targetId].hp <= 0) {
-      this.players[targetId].status = PLAYER_STATUS.DISABLED;
       const gameOverResponse = this.checkGameOver();
       return `${damageString}\n${this.players[targetId].name} was disabled!${gameOverResponse}`;
     }
@@ -194,13 +185,9 @@ class Game {
     this.players[targetId].legDamage += _damage;
 
     if (this.players[targetId].legDamage >= LEG_DAMAGE_THRESHOLD_MAX) {
-      this.players[targetId].statusEffects[
-        STATUS_EFFECTS.legSeverelyInjured
-      ] = true;
       return `${this.players[targetId].name} legs were severely injured!`;
     }
     if (this.players[targetId].legDamage >= LEG_DAMAGE_THRESHOLD) {
-      this.players[targetId].statusEffects[STATUS_EFFECTS.legInjured] = true;
       return `${this.players[targetId].name} legs were injured!`;
     }
     return `${this.players[targetId].name} took ${_damage} leg damage${blocked}`;
@@ -209,18 +196,16 @@ class Game {
   payActionCost({ playerId, cost }) {
     let adjustedCost = cost + this.players[playerId].staminaDamage;
 
-    if (this.players[playerId].statusEffects[STATUS_EFFECTS.legInjured]) {
+    if (this.players[playerId].legDamage > LEG_DAMAGE_THRESHOLD) {
       adjustedCost = cost * 1.5;
     }
 
-    if (
-      this.players[playerId].statusEffects[STATUS_EFFECTS.legSeverelyInjured]
-    ) {
+    if (this.players[playerId].legDamage > LEG_DAMAGE_THRESHOLD_MAX) {
       adjustedCost = cost * 2;
     }
 
     if (this.players[playerId].grapple) {
-      adjustedCost += this.players[playerId].grapple;
+      adjustedCost += this.players[playerId].grapple * 2;
     }
 
     this.players[playerId].stamina =
@@ -395,13 +380,16 @@ class Game {
     let specialResponse = "";
     let crit = false;
 
-    const { staminaDamage, staminaRecovery, throwDamage } = props;
+    const { staminaDamage, staminaRecovery, throwDamage, legDamage } = props;
 
     switch (position) {
       case GRAPPLE_TYPES.Trip:
-        // specialResponse = this.legDamagePlayer({ targetId, damage: legDamage });
         this.players[playerId].stamina += staminaRecovery;
-        specialResponse = `${staminaRecovery} stamina recovered`;
+        specialResponse = `${staminaRecovery} stamina recovered\n`;
+        specialResponse += this.legDamagePlayer({
+          targetId,
+          damage: legDamage,
+        });
         break;
       case GRAPPLE_TYPES.Takedown:
         specialResponse = this.staminaDamagePlayer({

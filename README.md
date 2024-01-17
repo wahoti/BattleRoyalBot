@@ -47,8 +47,8 @@ stamina damage: causes extra stamina usage on the player's next action then is r
 
 grapple status: grappling an opponent builds up their grapple level from 1 to 3.
 
-- level 1: -1 damage, +1 stamina fatigue
-- level 2: -2 damage, +2 stamina fatigue
+- level 1: -1 damage, +2 stamina fatigue
+- level 2: -2 damage, +4 stamina fatigue
 - level 3: 10 damage
 
 leg damage: attacks with leg damage build up a meter with negative effects at certain thresholds.
@@ -87,7 +87,7 @@ const ACTIONS = {
     damage: 2,
     props: {
       staminaRecovery: 5,
-      staminaDamage: 4,
+      staminaDamage: 5,
       dodgeable: true,
       counterable: true,
     },
@@ -97,7 +97,7 @@ const ACTIONS = {
     cost: 20,
     damage: 4,
     props: {
-      staminaDamage: 8,
+      staminaDamage: 10,
       legDamage: 4,
       dodgeable: true,
       counterable: true,
@@ -108,9 +108,10 @@ const ACTIONS = {
     cost: 15,
     damage: 0,
     props: {
-      staminaDamage: 4,
+      staminaDamage: 10,
       staminaRecovery: 5,
-      throwDamage: 2,
+      throwDamage: 3,
+      legDamage: 1,
       dodgeable: true,
       counterable: true,
     },

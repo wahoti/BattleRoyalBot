@@ -1,5 +1,5 @@
 const Game = require("./Game");
-const { GAME_STATUS, ACTIONS, PLAYER_STATUS } = require("./CONST");
+const { GAME_STATUS } = require("./CONST");
 
 class Engine {
   constructor() {
@@ -130,14 +130,6 @@ class Engine {
         },
       };
     }
-    // if (this.games[guildId].players[playerId].status !== PLAYER_STATUS.ACTIVE) {
-    //   return {
-    //     response: {
-    //       content: `player inactive, ${this.games[guildId].players[playerId].status}`,
-    //       ephemeral: true,
-    //     },
-    //   };
-    // }
     if (this.games[guildId].players[playerId].hp <= 0) {
       return {
         response: {

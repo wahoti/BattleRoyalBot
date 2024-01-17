@@ -4,11 +4,6 @@ const GAME_STATUS = {
   ENDED: "ENDED",
 };
 
-const PLAYER_STATUS = {
-  ACTIVE: "ACTIVE",
-  DISABLED: "DISABLED",
-};
-
 const MAX_HP = 10;
 const MAX_STAMINA = 1;
 const LEG_DAMAGE_THRESHOLD = 5;
@@ -24,7 +19,7 @@ const ACTIONS = {
     damage: 2,
     props: {
       staminaRecovery: 5,
-      staminaDamage: 4,
+      staminaDamage: 5,
       dodgeable: true,
       counterable: true,
     },
@@ -34,7 +29,7 @@ const ACTIONS = {
     cost: 20,
     damage: 4,
     props: {
-      staminaDamage: 8,
+      staminaDamage: 10,
       legDamage: 4,
       dodgeable: true,
       counterable: true,
@@ -45,9 +40,10 @@ const ACTIONS = {
     cost: 15,
     damage: 0,
     props: {
-      staminaDamage: 4,
+      staminaDamage: 10,
       staminaRecovery: 5,
-      throwDamage: 2,
+      throwDamage: 3,
+      legDamage: 1,
       dodgeable: true,
       counterable: true,
     },
@@ -163,11 +159,6 @@ const getExecute = ({ actionId, useTarget = false }) => async (interaction) => {
   }
 };
 
-const STATUS_EFFECTS = {
-  legInjured: "leg injured",
-  legSeverelyInjured: "leg severely injured",
-};
-
 const getCrit = () => Math.random() > 0.77;
 
 module.exports = {
@@ -175,13 +166,11 @@ module.exports = {
   MAX_HP,
   MAX_STAMINA,
   ACTIONS,
-  PLAYER_STATUS,
   PUNCH_TYPES,
   KICK_TYPES,
   getExecute,
   LEG_DAMAGE_THRESHOLD,
   LEG_DAMAGE_THRESHOLD_MAX,
-  STATUS_EFFECTS,
   GRAPPLE_TYPES,
   DODGE_TYPES,
   POSITION_MAP,
