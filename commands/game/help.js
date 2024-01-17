@@ -13,7 +13,7 @@ const HELP_MAP = {
   [HELP_TYPES.Mechanics]: `MECHANICS
 
   stamina damage: causes extra stamina usage on the player's next action then is reset to 0.
-  
+
   
   grapple status: grappling an opponent builds up their grapple level from 1 to 3.
   
@@ -86,9 +86,9 @@ const HELP_MAP = {
 - - grapple: reduce your grapple level by one, defend against incoming grapples
 
 - /act-taunt: utility effects, double effectiveness when half health
-- - distract: apply weak to all opponents 50% chance
+- - distract: apply weak to all opponents
 - - rage: apply rage to self
-- - throw: 1 damage to all opponents 50% chance, can crit`,
+- - throw: 1 damage to all opponents`,
 };
 
 module.exports = {
