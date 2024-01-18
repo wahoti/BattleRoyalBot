@@ -482,8 +482,8 @@ class Game {
         break;
       case GRAPPLE_TYPES.Throw:
         const crit = getCrit();
-        if (crit) specialResponse += "critical hit!";
-        specialResponse += `\n${this.damagePlayer({
+        if (crit) specialResponse += "critical hit!\n";
+        specialResponse += `${this.damagePlayer({
           targetId,
           damage: throwDamage,
           crit,
