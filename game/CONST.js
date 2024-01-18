@@ -177,6 +177,10 @@ const recurredExecute = async (interaction) => {
         .stamina;
     setTimeout(async () => {
       if (
+        global.engine.games[interaction.guildId].status !== GAME_STATUS.started
+      )
+        return;
+      if (
         global.engine.games[interaction.guildId].players[interaction.user.id]
           .preload
       ) {
@@ -210,6 +214,10 @@ const getExecute = ({ actionId, useTarget = false }) => async (interaction) => {
       global.engine.games[interaction.guildId].players[interaction.user.id]
         .stamina;
     setTimeout(async () => {
+      if (
+        global.engine.games[interaction.guildId].status !== GAME_STATUS.started
+      )
+        return;
       if (
         global.engine.games[interaction.guildId].players[interaction.user.id]
           .preload

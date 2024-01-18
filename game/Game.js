@@ -186,7 +186,7 @@ class Game {
       this.players[playerId].rage = 0;
     }
     if (this.players[playerId].weak) {
-      blocked = ` (weak ${this.players[playerId].weak} 🤬)`;
+      blocked = ` (weak ${this.players[playerId].weak} 🥶)`;
       _damage = _damage - this.players[playerId].weak;
       this.players[playerId].weak = 0;
     }
@@ -614,46 +614,53 @@ class Game {
   taunt({ playerId, props, position }) {
     const enraged = this.players[playerId].hp <= 5;
 
-    let actionResponse = "🤬 ";
-
-    actionResponse += `${this.players[playerId].name} used taunt (${position})${
-      enraged ? " (enraged)" : ""
-    }`;
+    let actionResponse = "";
     let specialResponse = "";
 
     const { throwDamage } = props;
 
     switch (position) {
       case TAUNT_TYPES.Distract:
+        actionResponse = `🥶${enraged ? "🥶" : ""} `;
         Object.values(this.players)
           .filter((player) => player.id !== playerId)
-          // .filter(() => Math.random() > 0.5)
           .forEach((player, index) => {
             this.players[player.id].weak += enraged ? 2 : 1;
             specialResponse += `${index > 0 ? "\n" : ""}${
               this.players[player.id].name
-            } was weakened`;
+            } was weakened${enraged ? " (x2)" : ""}`;
           });
         break;
       case TAUNT_TYPES.Rage:
+        actionResponse = `🤬${enraged ? "🤬" : ""} `;
         this.players[playerId].rage += enraged ? 2 : 1;
         break;
       case TAUNT_TYPES.Throw:
+        actionResponse = `💥${enraged ? "💥" : ""} `;
+
+        // handle rage for aoe attack
+        let _throwDamage = throwDamage;
+        if (this.players[playerId].rage) {
+          _throwDamage += this.players[playerId].rage;
+          this.players[playerId].rage = 0;
+          specialResponse += "(rage 🤬)\n";
+        }
+
         Object.values(this.players)
           .filter((player) => player.id !== playerId)
-          // .filter(() => Math.random() > 0.5)
           .forEach((player, index) => {
-            const crit = getCrit();
             specialResponse += `${index > 0 ? "\n" : ""}${this.damagePlayer({
               targetId: player.id,
-              damage: enraged ? throwDamage * 2 : throwDamage,
-              crit,
+              damage: enraged ? _throwDamage * 2 : _throwDamage,
+              crit: false,
               playerId,
             })}`;
           });
         break;
       default:
     }
+
+    actionResponse += `${this.players[playerId].name} used taunt (${position})`;
 
     return {
       ephemeral: false,

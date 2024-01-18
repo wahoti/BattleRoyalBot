@@ -6,6 +6,11 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("test-game")
     .setDescription("creates and starts a test game")
+    .addBooleanOption((option) =>
+      option
+        .setName("player")
+        .setDescription("Whether or not the player joins the game")
+    )
     .addStringOption((option) =>
       option
         .setName("level")
@@ -30,11 +35,6 @@ module.exports = {
           { name: SPEED_TYPES.Medium, value: SPEED_TYPES.Medium },
           { name: SPEED_TYPES.Slow, value: SPEED_TYPES.Slow }
         )
-    )
-    .addBooleanOption((option) =>
-      option
-        .setName("player")
-        .setDescription("Whether or not the player joins the game")
     ),
   async execute(interaction) {
     const speed = interaction.options.getString("speed");

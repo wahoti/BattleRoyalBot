@@ -46,7 +46,7 @@ COMMANDS
 - /act-taunt: utility effects, double effectiveness when half health
 - - distract: apply weak to all opponents
 - - rage: apply rage to self
-- - throw: 1 damage to all opponents, can crit
+- - throw: 1 damage to all opponents
 
 MECHANICS
 
@@ -69,7 +69,6 @@ critical hits: attacks that can crit have a 23% chance for double damage.
 - - cross punch
 - - head kick
 - - counters
-- - taunt throw
 
 game speed:
 
