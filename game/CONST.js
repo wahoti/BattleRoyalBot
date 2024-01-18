@@ -182,12 +182,14 @@ const recurredExecute = async (interaction) => {
       ) {
         // console.log("CHAINED PRELOAD");
         // chained preload
-        await recurredExecute(interaction);
+        setTimeout(async () => {
+          await recurredExecute(interaction);
+        }, 1000);
       } else {
         // regular stamina message
         await interaction.followUp(followUp);
       }
-    }, Math.abs(stamina * gameSpeedModifier - 1000));
+    }, Math.abs(stamina * gameSpeedModifier));
   }
 };
 
@@ -214,22 +216,26 @@ const getExecute = ({ actionId, useTarget = false }) => async (interaction) => {
       ) {
         // console.log("PRELOAD");
         // preload
-        await recurredExecute(interaction);
+        setTimeout(async () => {
+          await recurredExecute(interaction);
+        }, 1000);
       } else {
         // regular stamina message
         await interaction.followUp(followUp);
       }
-    }, Math.abs(stamina * gameSpeedModifier - 1000));
+    }, Math.abs(stamina * gameSpeedModifier));
   }
 };
 
 const getCrit = () => Math.random() > 0.77;
 
 const BOT_TYPES = {
+  AFK: "AFK",
   Lv1: "Lv1",
   Lv2: "Lv2",
   Lv3: "Lv3",
-  AFK: "AFK",
+  Lv4: "Lv4",
+  Lv5: "Lv5",
 };
 
 const BOT_HANDICAPS = {
@@ -237,6 +243,8 @@ const BOT_HANDICAPS = {
   [BOT_TYPES.Lv2]: 5,
   [BOT_TYPES.Lv3]: 0,
   [BOT_TYPES.AFK]: 0,
+  [BOT_TYPES.Lv4]: -3,
+  [BOT_TYPES.Lv5]: -6,
 };
 
 function shuffle(array) {

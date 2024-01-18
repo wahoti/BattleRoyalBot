@@ -14,7 +14,9 @@ module.exports = {
         .addChoices(
           { name: BOT_TYPES.Lv1, value: BOT_TYPES.Lv1 },
           { name: BOT_TYPES.Lv2, value: BOT_TYPES.Lv2 },
-          { name: BOT_TYPES.Lv3, value: BOT_TYPES.Lv3 }
+          { name: BOT_TYPES.Lv3, value: BOT_TYPES.Lv3 },
+          { name: BOT_TYPES.Lv4, value: BOT_TYPES.Lv4 },
+          { name: BOT_TYPES.Lv5, value: BOT_TYPES.Lv5 }
         )
     )
     .addStringOption((option) =>

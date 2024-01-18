@@ -117,7 +117,7 @@ class Game {
       let statusString = `${acc}\n\n${player.name}:`;
       statusString += `\thp ${player.hp},  `;
       if (player.hp < 0) return statusString;
-      statusString += `\tstamina: ${player.stamina}, `;
+      statusString += `\tstamina: (${this.getDuration(player.stamina)}s), `;
       if (player.staminaDamage)
         statusString += `\tstaminaDamage: ${player.staminaDamage}`;
       if (player.legDamage) statusString += `\tlegDamage: ${player.legDamage}`;
@@ -151,7 +151,7 @@ class Game {
 
   grapplePlayer({ targetId, playerId, position }) {
     if (this.players[targetId].guard === GUARD_TYPES.Grapple) {
-      return `${this.players[targetId].name} blocked the grapple`;
+      return `${this.players[targetId].name} blocked 🛡️ the grapple`;
     }
 
     this.players[targetId].grapple = Math.min(
@@ -181,12 +181,12 @@ class Game {
     let blocked = "";
 
     if (this.players[playerId].rage) {
-      blocked = ` (rage ${this.players[playerId].rage})`;
+      blocked = ` (rage ${this.players[playerId].rage} 🤬)`;
       _damage = _damage + this.players[playerId].rage;
       this.players[playerId].rage = 0;
     }
     if (this.players[playerId].weak) {
-      blocked = ` (weak ${this.players[playerId].weak})`;
+      blocked = ` (weak ${this.players[playerId].weak} 🤬)`;
       _damage = _damage - this.players[playerId].weak;
       this.players[playerId].weak = 0;
     }
@@ -194,12 +194,12 @@ class Game {
       _damage = _damage * 2;
     }
     if (this.players[targetId].guard) {
-      blocked = " (blocked)";
+      blocked = " (blocked 🛡️)";
       _damage = _damage / 2;
     }
 
     if (this.players[playerId].grapple) {
-      blocked += " (grappled)";
+      blocked += " (grappled 🫳)";
       _damage = Math.max(0, _damage - this.players[playerId].grapple);
     }
 
@@ -220,7 +220,7 @@ class Game {
     let blocked = "";
 
     if (this.players[targetId].guard) {
-      blocked = " (blocked)";
+      blocked = " (blocked 🛡️)";
       _damage = _damage / 2;
     }
 
@@ -236,7 +236,7 @@ class Game {
     let blocked = "";
 
     if (this.players[targetId].guard) {
-      blocked = " (blocked)";
+      blocked = " (blocked 🛡️)";
       _damage = _damage / 2;
     }
 
@@ -319,7 +319,7 @@ class Game {
       this.players[targetId].dodge &&
       DODGE_MAP[this.players[targetId].dodge] !== POSITION_MAP[position]
     ) {
-      preventAction = `${this.players[targetId].name} dodged the attack (${name} ${position})`;
+      preventAction = `${this.players[targetId].name} dodged 🏃 the attack (${name} ${position})`;
     }
 
     if (
@@ -328,7 +328,7 @@ class Game {
       this.players[targetId].counter === POSITION_MAP[position]
     ) {
       const crit = getCrit();
-      preventAction = `${this.players[targetId].name} countered the attack (${actionId} ${position})`;
+      preventAction = `${this.players[targetId].name} countered ↪️ the attack (${actionId} ${position})`;
       if (crit) preventAction += "\ncritical hit!";
       preventAction += `\n${this.damagePlayer({
         playerId: targetId,
@@ -379,6 +379,7 @@ class Game {
 
   punch({ playerId, targetId, position, props }) {
     let specialResponse = "";
+    let actionResponse = "👊 ";
     let crit = false;
 
     const { staminaRecovery, staminaDamage } = props;
@@ -405,7 +406,6 @@ class Game {
       default:
     }
 
-    let actionResponse = "";
     actionResponse += this.players[playerId].name;
     actionResponse += ` punched (${position}) `;
     actionResponse += this.players[targetId].name;
@@ -420,6 +420,7 @@ class Game {
 
   kick({ playerId, targetId, position, props }) {
     let specialResponse = "";
+    let actionResponse = "🦵 ";
     let crit = false;
 
     const { legDamage, staminaDamage } = props;
@@ -443,7 +444,6 @@ class Game {
       default:
     }
 
-    let actionResponse = "";
     actionResponse += this.players[playerId].name;
     actionResponse += ` kicked (${position}) `;
     actionResponse += this.players[targetId].name;
@@ -458,6 +458,7 @@ class Game {
 
   grapple({ playerId, targetId, position, props }) {
     let specialResponse = "";
+    let actionResponse = "🫳 ";
     let crit = false;
 
     const { staminaDamage, staminaRecovery, throwDamage, legDamage } = props;
@@ -481,18 +482,18 @@ class Game {
         break;
       case GRAPPLE_TYPES.Throw:
         const crit = getCrit();
-        if (crit) specialResponse += "critical hit!\n";
-        specialResponse += this.damagePlayer({
+        if (crit) specialResponse += "critical hit!";
+        specialResponse += `\n${this.damagePlayer({
           targetId,
           damage: throwDamage,
           crit,
           playerId,
-        });
+        })}`;
         break;
       default:
     }
 
-    let actionResponse = this.grapplePlayer({ targetId, playerId, position });
+    actionResponse += this.grapplePlayer({ targetId, playerId, position });
 
     return {
       ephemeral: false,
@@ -504,10 +505,10 @@ class Game {
 
   dodge({ playerId, position, props }) {
     let specialResponse = "";
+    let actionResponse = "🏃 ";
 
     const { duration } = props;
 
-    let actionResponse = "";
     actionResponse += this.players[playerId].name;
     actionResponse += ` is evading attacks (${this.getDuration(duration)}s)`;
 
@@ -526,10 +527,10 @@ class Game {
 
   counter({ playerId, position, props }) {
     let specialResponse = "";
+    let actionResponse = "↪️ ";
 
     const { duration } = props;
 
-    let actionResponse = "";
     actionResponse += this.players[playerId].name;
     actionResponse += ` is preparing to counter ${position} (${this.getDuration(
       duration
@@ -550,6 +551,7 @@ class Game {
 
   guard({ playerId, props, position }) {
     let specialResponse = "";
+    let actionResponse = "🛡️ ";
 
     const { duration, staminaRecovery, healthRecovery } = props;
 
@@ -598,7 +600,6 @@ class Game {
       this.players[playerId].guard = null;
     }, this.getDurationMs(duration));
 
-    let actionResponse = "";
     actionResponse += this.players[playerId].name;
     actionResponse += ` is guarding attacks (${this.getDuration(duration)}s)`;
 
@@ -613,9 +614,11 @@ class Game {
   taunt({ playerId, props, position }) {
     const enraged = this.players[playerId].hp <= 5;
 
-    const actionResponse = `${
-      this.players[playerId].name
-    } used taunt (${position})${enraged ? " (enraged)" : ""}`;
+    let actionResponse = "🤬 ";
+
+    actionResponse += `${this.players[playerId].name} used taunt (${position})${
+      enraged ? " (enraged)" : ""
+    }`;
     let specialResponse = "";
 
     const { throwDamage } = props;
