@@ -176,7 +176,17 @@ const recurredExecute = async (interaction) => {
       global.engine.games[interaction.guildId].players[interaction.user.id]
         .stamina;
     setTimeout(async () => {
-      await interaction.followUp(followUp);
+      if (
+        global.engine.games[interaction.guildId].players[interaction.user.id]
+          .preload
+      ) {
+        // console.log("CHAINED PRELOAD");
+        // chained preload
+        await recurredExecute(interaction);
+      } else {
+        // regular stamina message
+        await interaction.followUp(followUp);
+      }
     }, Math.abs(stamina * gameSpeedModifier - 1000));
   }
 };
@@ -202,6 +212,7 @@ const getExecute = ({ actionId, useTarget = false }) => async (interaction) => {
         global.engine.games[interaction.guildId].players[interaction.user.id]
           .preload
       ) {
+        // console.log("PRELOAD");
         // preload
         await recurredExecute(interaction);
       } else {
