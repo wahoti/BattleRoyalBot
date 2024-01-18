@@ -134,7 +134,9 @@ class Engine {
       };
     }
     if (this.games[guildId].players[playerId].stamina <= 0) {
-      let outOfStaminaContent = `out of stamina, ${this.games[guildId].players[playerId].stamina}`;
+      let outOfStaminaContent = `out of stamina, (${this.games[
+        guildId
+      ].getDuration(this.games[guildId].players[playerId].stamina)}s)`;
       this.games[guildId].players[playerId].preload = () =>
         this.games[guildId].doAction({
           playerId,

@@ -161,6 +161,26 @@ const DODGE_MAP = {
   [DODGE_TYPES.High]: DODGE_TYPES.Low,
 };
 
+const recurredExecute = async (interaction) => {
+  const { response, followUp, gameSpeedModifier } = global.engine.games[
+    interaction.guildId
+  ].players[interaction.user.id].preload();
+
+  global.engine.games[interaction.guildId].players[
+    interaction.user.id
+  ].preload = null;
+
+  await interaction.followUp(response);
+  if (followUp) {
+    const stamina =
+      global.engine.games[interaction.guildId].players[interaction.user.id]
+        .stamina;
+    setTimeout(async () => {
+      await interaction.followUp(followUp);
+    }, Math.abs(stamina * gameSpeedModifier - 1000));
+  }
+};
+
 const getExecute = ({ actionId, useTarget = false }) => async (interaction) => {
   const target = useTarget ? interaction.options.getUser("target") : "";
   const position = interaction.options.getString("position");
@@ -178,8 +198,17 @@ const getExecute = ({ actionId, useTarget = false }) => async (interaction) => {
       global.engine.games[interaction.guildId].players[interaction.user.id]
         .stamina;
     setTimeout(async () => {
-      await interaction.followUp(followUp);
-    }, Math.abs(stamina * gameSpeedModifier));
+      if (
+        global.engine.games[interaction.guildId].players[interaction.user.id]
+          .preload
+      ) {
+        // preload
+        await recurredExecute(interaction);
+      } else {
+        // regular stamina message
+        await interaction.followUp(followUp);
+      }
+    }, Math.abs(stamina * gameSpeedModifier - 1000));
   }
 };
 

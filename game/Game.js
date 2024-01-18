@@ -1,5 +1,5 @@
 const Player = require("./Player");
-const { getBotAction, SYSTEM_TEXT } = require("./Bot");
+const { getBotAction } = require("./Bot");
 const {
   GAME_STATUS,
   MAX_STAMINA,
@@ -51,7 +51,6 @@ class Game {
 
     if (this.gameStatus === GAME_STATUS.STARTED) {
       this.doBotActions();
-      this.doPreloadActions();
     }
 
     this.checkGameOver();
@@ -68,28 +67,6 @@ class Game {
       });
     if (this.channelId && botResponse) {
       global.engine.client.channels.cache.get(this.channelId).send(botResponse);
-    }
-  }
-
-  doPreloadActions() {
-    let preloadResponse = "";
-    Object.values(this.players)
-      .filter((player) => !player.bot)
-      .filter((player) => player.stamina > 0)
-      .filter((player) => player.hp > 0)
-      .filter((player) => player.preload)
-      .forEach((player) => {
-        const preloadActionResponse = player.preload();
-        this.players[player.id].preload = null;
-        // TODO how to show only to user
-        if (preloadActionResponse.response.ephemeral) return;
-        preloadResponse += SYSTEM_TEXT;
-        preloadResponse += preloadActionResponse.response.content;
-      });
-    if (this.channelId && preloadResponse) {
-      global.engine.client.channels.cache
-        .get(this.channelId)
-        .send(preloadResponse);
     }
   }
 

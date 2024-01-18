@@ -23,5 +23,4 @@ const getBotAction = ({ player, game }) => {
 
 module.exports = {
   getBotAction,
-  SYSTEM_TEXT,
 };
