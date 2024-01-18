@@ -124,7 +124,7 @@ const ACTIONS = {
   },
   taunt: {
     name: "Taunt",
-    cost: 5,
+    cost: 6,
     props: {
       throwDamage: 1,
     },

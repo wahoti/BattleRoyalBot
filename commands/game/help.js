@@ -85,7 +85,7 @@ const HELP_MAP = {
 - - recover: recover health
 - - grapple: reduce your grapple level by one, defend against incoming grapples
 
-- /act-taunt: utility effects, double effectiveness when half health, cost 5
+- /act-taunt: utility effects, double effectiveness when half health, cost 6
 - - distract: apply weak to all opponents
 - - rage: apply rage to self
 - - throw: 1 damage to all opponents, can crit`,
