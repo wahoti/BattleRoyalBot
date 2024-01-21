@@ -100,7 +100,7 @@ const ACTIONS = {
     name: "Dodge",
     cost: 10,
     props: {
-      duration: 15,
+      duration: 10,
     },
     args: DODGE_TYPES,
   },
@@ -124,7 +124,7 @@ const ACTIONS = {
   },
   taunt: {
     name: "Taunt",
-    cost: 6,
+    cost: 8,
     props: {
       throwDamage: 1,
     },

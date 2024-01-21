@@ -187,8 +187,12 @@ class Game {
     }
     if (this.players[playerId].weak) {
       blocked = ` (weak ${this.players[playerId].weak} 🥶)`;
-      _damage = _damage - this.players[playerId].weak;
+      _damage = Math.max(0, _damage - this.players[playerId].weak);
       this.players[playerId].weak = 0;
+    }
+    if (this.players[playerId].grapple) {
+      blocked += ` (grappled ${this.players[playerId].grapple} 🫳)`;
+      _damage = Math.max(0, _damage - this.players[playerId].grapple);
     }
     if (crit) {
       _damage = _damage * 2;
@@ -196,11 +200,6 @@ class Game {
     if (this.players[targetId].guard) {
       blocked = " (blocked 🛡️)";
       _damage = _damage / 2;
-    }
-
-    if (this.players[playerId].grapple) {
-      blocked += " (grappled 🫳)";
-      _damage = Math.max(0, _damage - this.players[playerId].grapple);
     }
 
     this.players[targetId].hp -= _damage;
@@ -518,7 +517,7 @@ class Game {
     }, this.getDurationMs(duration));
 
     return {
-      ephemeral: false,
+      ephemeral: true,
       actionResponse,
       specialResponse,
       crit: false,
@@ -638,12 +637,17 @@ class Game {
       case TAUNT_TYPES.Throw:
         actionResponse = `💥${enraged ? "💥" : ""} `;
 
-        // handle rage for aoe attack
+        // handle modifiers for aoe attack
         let _throwDamage = throwDamage;
         if (this.players[playerId].rage) {
           _throwDamage += this.players[playerId].rage;
           this.players[playerId].rage = 0;
           specialResponse += "(rage 🤬)\n";
+        }
+        if (this.players[playerId].weak) {
+          _throwDamage -= this.players[playerId].weak;
+          this.players[playerId].weak = 0;
+          specialResponse += "(weak 🥶)\n";
         }
 
         Object.values(this.players)

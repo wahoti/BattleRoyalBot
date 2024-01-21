@@ -51,6 +51,16 @@ const getBotAction = ({ player, game }) => {
   return `${SYSTEM_TEXT}${response.response.content}`;
 };
 
+const BOT_STYLES = {
+  aggressive: "aggressive",
+};
+
+const getBotStyle = () => {
+  const newBot = shuffle(Object.values(BOT_STYLES))[0];
+  return newBot;
+};
+
 module.exports = {
   getBotAction,
+  getBotStyle,
 };

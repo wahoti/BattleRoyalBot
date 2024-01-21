@@ -56,17 +56,19 @@ const HELP_MAP = {
   - - trip (low): refund 5 stamina (shorter cooldown)
   - - takedown (mid): stamina damage
   - - throw (high): health damage
-  - /act-dodge: 🏃 dodge 2/3 incoming attack positions, cost 10, duration 15
+  - /act-dodge: 🏃 dodge 2/3 incoming attack positions, cost 10, duration 10
   - - low is hit by mid
   - - mid is hit by high
   - - high is hit by low
+  - - dodge is a hidden move (other players cant see you use this)
   - /act-counter: ↪️ pick 1 of 3 positions to counter, cost 5, duration 15
   - - evade and retaliate against an attack of chosen position
+  - - counter is a hidden move (other players cant see you use this)
   - /act-guard: 🛡️ reduce incoming damage by 50%, cost 8, duration 15
   - - quick: refund 4 stamina (shorter cooldown)
   - - recover: recover health
   - - grapple: reduce your grapple level by one, defend against incoming grapples
-  - /act-taunt: utility effects, double effectiveness when half health, cost 6
+  - /act-taunt: utility effects, double effectiveness when half health, cost 8
   - - distract 🥶: apply weak to all opponents
   - - rage 🤬: apply rage to self
   - - throw 💥: 1 damage to all opponents`,

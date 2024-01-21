@@ -34,9 +34,11 @@ COMMANDS
 - - low is hit by mid
 - - mid is hit by high
 - - high is hit by low
+- - dodge is a hidden move (other players cant see you use this)
 
 - /act-counter: pick 1 of 3 positions to counter
 - - evade and retaliate against an attack of chosen position
+- - counter is a hidden move (other players cant see you use this)
 
 - /act-guard: reduce incoming damage
 - - quick: refund stamina (shorter cooldown)
@@ -130,7 +132,7 @@ const ACTIONS = {
     name: "Dodge",
     cost: 10,
     props: {
-      duration: 15,
+      duration: 10,
     },
   },
   counter: {
@@ -151,7 +153,7 @@ const ACTIONS = {
   },
   taunt: {
     name: "Taunt",
-    cost: 5,
+    cost: 8,
     props: {
       throwDamage: 1,
     },
