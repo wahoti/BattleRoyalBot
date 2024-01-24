@@ -4,10 +4,8 @@ const { getBotStyle } = require("./Bot");
 class Player {
   constructor({ playerId, name, bot }) {
     console.log("NEW PLAYER", playerId);
-    this.hp = MAX_HP;
-    this.stamina = MAX_STAMINA;
-    this.staminaDamage = 0;
-    this.legDamage = 0;
+
+    // META
     this.name = name;
     this.id = playerId;
     this.bot = bot;
@@ -15,9 +13,14 @@ class Player {
       this.style = getBotStyle();
     }
 
+    // UTILITY
     this.preload = null;
 
     // STATUS
+    this.hp = MAX_HP;
+    this.stamina = MAX_STAMINA;
+    this.staminaDamage = 0;
+    this.legDamage = 0;
     this.dodge = null;
     this.counter = null;
     this.guard = null;

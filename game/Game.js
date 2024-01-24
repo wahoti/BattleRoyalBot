@@ -251,18 +251,29 @@ class Game {
   }
 
   payActionCost({ playerId, cost }) {
-    let adjustedCost = cost + this.players[playerId].staminaDamage;
+    let adjustedCost = cost;
+    let infoString = "";
 
-    if (this.players[playerId].legDamage > LEG_DAMAGE_THRESHOLD) {
-      adjustedCost = cost * 1.5;
-    }
-
-    if (this.players[playerId].legDamage > LEG_DAMAGE_THRESHOLD_MAX) {
-      adjustedCost = cost * 2;
+    if (this.players[playerId].staminaDamage) {
+      adjustedCost += this.players[playerId].staminaDamage;
+      infoString += ` (stamina damage ${this.getDuration(
+        this.players[playerId].staminaDamage
+      )}s)`;
     }
 
     if (this.players[playerId].grapple) {
+      infoString += ` (grappled ${this.getDuration(
+        this.players[playerId].grapple * 2
+      )}s)`;
       adjustedCost += this.players[playerId].grapple * 2;
+    }
+
+    if (this.players[playerId].legDamage >= LEG_DAMAGE_THRESHOLD_MAX) {
+      adjustedCost += adjustedCost * 2;
+      infoString += " (leg injured x2)";
+    } else if (this.players[playerId].legDamage >= LEG_DAMAGE_THRESHOLD) {
+      adjustedCost += adjustedCost * 1.5;
+      infoString += " (leg injured x1.5)";
     }
 
     if (this.players[playerId].bot) {
@@ -275,7 +286,9 @@ class Game {
 
     const costResponse = `${
       this.players[playerId].name
-    } used (${this.getDuration(adjustedCost)}s) stamina`;
+    } used (${this.getDuration(adjustedCost)}s) stamina${
+      adjustedCost === cost ? "" : `\n${infoString}`
+    }`;
 
     return costResponse;
   }
