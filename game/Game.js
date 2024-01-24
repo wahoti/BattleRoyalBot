@@ -287,7 +287,7 @@ class Game {
     const costResponse = `${
       this.players[playerId].name
     } used (${this.getDuration(adjustedCost)}s) stamina${
-      adjustedCost === cost ? "" : `\n${infoString}`
+      adjustedCost === cost ? "" : ` ${infoString}`
     }`;
 
     return costResponse;
